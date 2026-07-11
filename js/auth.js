@@ -32,8 +32,6 @@
   function initLogin() {
     const form = ui().qs('[data-login-form]');
     if (!form) return;
-    const configWarning = ui().qs('[data-config-warning]');
-    if (configWarning) configWarning.hidden = db().isReady();
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -66,8 +64,6 @@
   function initRegister() {
     const form = ui().qs('[data-register-form]');
     if (!form) return;
-    const configWarning = ui().qs('[data-config-warning]');
-    if (configWarning) configWarning.hidden = db().isReady();
     const otpForm = ui().qs('[data-otp-form]');
 
     form.addEventListener('submit', async (event) => {
