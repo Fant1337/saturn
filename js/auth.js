@@ -75,7 +75,7 @@
       const passwordRepeat = form.elements.passwordRepeat.value;
 
       if (!db().isReady()) {
-        ui().toast('Сначала подключите Supabase в форме настройки ниже', 'error');
+        ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
         return;
       }
       if (fullName.length < 3 || !email) {
