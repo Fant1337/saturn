@@ -71,7 +71,6 @@
       const submit = form.querySelector('button[type="submit"]');
       const fullName = form.elements.fullName.value.trim();
       const email = form.elements.email.value.trim();
-      const phone = form.elements.phone.value.trim();
       const password = form.elements.password.value;
       const passwordRepeat = form.elements.passwordRepeat.value;
 
@@ -79,8 +78,8 @@
         ui().toast('Сначала подключите Supabase в форме настройки ниже', 'error');
         return;
       }
-      if (fullName.length < 3 || !email || !phone) {
-        ui().toast('Введите ФИО, email и телефон', 'error');
+      if (fullName.length < 3 || !email) {
+        ui().toast('Введите ФИО и email', 'error');
         return;
       }
       if (password.length < 6 || password !== passwordRepeat) {
@@ -90,7 +89,7 @@
 
       try {
         ui().setBusy(submit, true, 'Отправляем код');
-        await db().register({ email, phone, password, fullName });
+        await db().register({ email, password, fullName });
         form.hidden = true;
         otpForm.hidden = false;
         otpForm.dataset.email = email;

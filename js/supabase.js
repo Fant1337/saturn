@@ -499,22 +499,20 @@
     return data;
   }
 
-  async function register({ email, phone, password, fullName }) {
+  async function register({ email, password, fullName }) {
     const client = requireClient();
-    const normalizedPhone = normalizePhone(phone);
     const { data, error } = await client.auth.signUp({
       email,
       password,
       options: {
         data: {
           full_name: fullName,
-          phone: normalizedPhone,
           role: 'user'
         }
       }
     });
     if (error) throw error;
-    if (data.user) await upsertProfile(data.user, { full_name: fullName, phone: normalizedPhone, email });
+    if (data.user) await upsertProfile(data.user, { full_name: fullName, email });
     return data;
   }
 

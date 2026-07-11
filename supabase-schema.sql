@@ -12,7 +12,7 @@ end $$;
 
 create table if not exists public.users (
   id uuid primary key references auth.users(id) on delete cascade,
-  phone text unique,
+  phone text,
   full_name text,
   role public.user_role not null default 'user',
   created_at timestamptz not null default now()
@@ -117,13 +117,12 @@ begin
   insert into public.users (id, phone, full_name, role)
   values (
     new.id,
-    new.phone,
+    coalesce(new.phone, new.raw_user_meta_data->>'phone', ''),
     coalesce(new.raw_user_meta_data->>'full_name', ''),
     'user'
   )
   on conflict (id) do update
-    set phone = excluded.phone,
-        full_name = nullif(excluded.full_name, '');
+    set full_name = nullif(excluded.full_name, '');
   return new;
 end;
 $$;
