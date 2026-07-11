@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход | SATURN</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="js/supabase.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/auth.js"></script>
+</head>
+<body data-page="login">
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="SATURN">
+        <span class="brand__mark"><i data-lucide="radar"></i></span>
+        <span class="brand__text"><strong>SATURN</strong><span>АНТЕННЫ РЭБ</span></span>
+      </a>
+      <nav class="nav__menu" data-nav-menu aria-label="Основная навигация">
+        <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
+        <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
+        <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
+        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
+        <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
+      </nav>
+      <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Открыть меню"><i data-lucide="menu"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="auth-shell">
+      <div class="auth-brief reveal">
+        <span class="eyebrow">AUTH</span>
+        <h1>Вход в защищенный контур</h1>
+        <p>Авторизация работает через Supabase Authentication по телефону и паролю. Сессия сохраняется клиентом Supabase.</p>
+      </div>
+      <div>
+        <form class="auth-panel reveal" data-login-form>
+          <div class="section-heading section-heading--compact">
+            <span>Авторизация</span>
+            <h2>Войти</h2>
+          </div>
+          <div class="alert" data-config-warning>
+            <i data-lucide="triangle-alert"></i>
+            <span>Supabase еще не настроен. Сохраните URL проекта и anon key ниже.</span>
+          </div>
+          <label>
+            <span>Телефон</span>
+            <input name="phone" type="tel" placeholder="+79990000000" autocomplete="tel" required>
+          </label>
+          <label>
+            <span>Пароль</span>
+            <input name="password" type="password" minlength="6" autocomplete="current-password" required>
+          </label>
+          <button class="btn btn--primary btn--wide" type="submit"><i data-lucide="log-in"></i><span>Войти</span></button>
+          <a class="btn btn--ghost btn--wide" href="register.html"><i data-lucide="user-plus"></i><span>Создать аккаунт</span></a>
+        </form>
+
+        <form class="config-panel reveal" data-config-form>
+          <div class="section-heading section-heading--compact">
+            <span>Настройка</span>
+            <h2>Подключение Supabase</h2>
+          </div>
+          <label>
+            <span>Project URL</span>
+            <input name="url" type="url" placeholder="https://project-ref.supabase.co" required>
+          </label>
+          <label>
+            <span>Anon key</span>
+            <textarea name="anonKey" rows="4" placeholder="eyJhbGciOiJIUzI1NiIs..." required></textarea>
+          </label>
+          <button class="btn btn--ghost" type="submit"><i data-lucide="save"></i><span>Сохранить конфигурацию</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

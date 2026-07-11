@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корзина | SATURN</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="js/supabase.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/cart.js"></script>
+</head>
+<body data-page="cart">
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="SATURN">
+        <span class="brand__mark"><i data-lucide="radar"></i></span>
+        <span class="brand__text"><strong>SATURN</strong><span>АНТЕННЫ РЭБ</span></span>
+      </a>
+      <nav class="nav__menu" data-nav-menu aria-label="Основная навигация">
+        <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
+        <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
+        <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
+        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
+        <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
+      </nav>
+      <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Открыть меню"><i data-lucide="menu"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <div>
+          <span class="eyebrow">CART</span>
+          <h1>Корзина</h1>
+          <p>Изменяйте количество, удаляйте позиции и переходите к оформлению заказа.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-main">
+      <div class="container cart-layout">
+        <div class="cart-list" data-cart-list></div>
+        <aside class="cart-summary" data-cart-summary></aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h3>SATURN</h3><p>Корзина хранится в Supabase для авторизованных пользователей и локально до входа.</p></div>
+      <div><h4>Разделы</h4><a href="catalog.html">Каталог</a><a href="checkout.html">Оформление</a></div>
+      <div><h4>Контакты</h4><a href="tel:+78005550144">+7 800 555-01-44</a><a href="mailto:ops@saturn-store.ru">ops@saturn-store.ru</a></div>
+      <div><h4>Статусы</h4><p>Обрабатывается, подтвержден, отправлен, доставлен, отменен.</p></div>
+    </div>
+  </footer>
+</body>
+</html>

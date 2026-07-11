@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог | SATURN</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="js/supabase.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/catalog.js"></script>
+</head>
+<body data-page="catalog">
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="SATURN">
+        <span class="brand__mark"><i data-lucide="radar"></i></span>
+        <span class="brand__text"><strong>SATURN</strong><span>АНТЕННЫ РЭБ</span></span>
+      </a>
+      <nav class="nav__menu" data-nav-menu aria-label="Основная навигация">
+        <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
+        <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
+        <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
+        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
+        <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
+      </nav>
+      <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Открыть меню"><i data-lucide="menu"></i></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <div>
+          <span class="eyebrow">CATALOG</span>
+          <h1>Каталог спиральных антенн</h1>
+          <p>Широкополосные спиральные антенны с круговой поляризацией для систем РЭБ. Фильтр по диапазону, поиск по модели.</p>
+        </div>
+        <a class="btn btn--ghost" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span></a>
+      </div>
+    </section>
+
+    <section class="page-main" data-catalog-page>
+      <div class="container">
+        <div class="catalog-toolbar">
+          <label class="search-box">
+            <i data-lucide="search"></i>
+            <input type="search" data-product-search placeholder="Поиск по названию, описанию или артикулу" aria-label="Поиск товаров">
+          </label>
+          <div class="filter-chips" data-category-filters></div>
+          <div class="catalog-count" data-catalog-count>0 позиций</div>
+        </div>
+        <div class="product-grid" data-product-grid></div>
+        <div class="pagination" data-pagination></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><h3>SATURN</h3><p>Производство спиральных антенн для систем РЭБ. Диапазон 300–2750 МГц.</p></div>
+      <div><h4>Разделы</h4><a href="index.html">Главная</a><a href="catalog.html">Каталог</a></div>
+      <div><h4>Контакты</h4><a href="tel:+78005550144">+7 800 555-01-44</a><a href="mailto:ops@saturn-store.ru">ops@saturn-store.ru</a></div>
+      <div><h4>Склад</h4><p>Проверка наличия и обработка заказов в рабочем контуре.</p></div>
+    </div>
+  </footer>
+</body>
+</html>

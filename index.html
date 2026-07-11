@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SATURN - производитель широкополосных спиральных антенн для систем РЭБ. Диапазон 300–2750 МГц, круговая поляризация L/R.">
+  <title>SATURN | Спиральные антенны РЭБ</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script defer src="js/supabase.js"></script>
+  <script defer src="js/main.js"></script>
+</head>
+<body data-page="home">
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="SATURN">
+        <span class="brand__mark"><i data-lucide="radar"></i></span>
+        <span class="brand__text"><strong>SATURN</strong><span>АНТЕННЫ РЭБ</span></span>
+      </a>
+      <nav class="nav__menu" data-nav-menu aria-label="Основная навигация">
+        <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
+        <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
+        <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
+        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
+        <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
+      </nav>
+      <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Открыть меню">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__content reveal">
+          <span class="eyebrow">EW ANTENNA SYSTEMS</span>
+          <h1>Спиральные антенны для систем РЭБ</h1>
+          <p>Разработка и производство широкополосных спиральных антенн с круговой поляризацией для пеленгования, мониторинга и подавления в диапазоне 300–2750 МГц.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Перейти в каталог</span></a>
+            <a class="btn btn--ghost" href="#company"><i data-lucide="scan-line"></i><span>О компании</span></a>
+          </div>
+        </div>
+        <div class="hero__stats reveal">
+          <div class="stat-tile"><span>Моделей</span><strong>9</strong></div>
+          <div class="stat-tile"><span>Диапазон</span><strong>300–2750 МГц</strong></div>
+          <div class="stat-tile"><span>КУ</span><strong>до 12 дБ</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="company">
+      <div class="container two-col">
+        <div class="text-panel reveal">
+          <span class="eyebrow">SATURN ANTENNAS</span>
+          <h2>Производство антенн с контролируемыми параметрами</h2>
+          <p>Каждая спиральная антенна проходит измерение коэффициента усиления, КСВ и диаграммы направленности. Диапазон рабочих частот 300–2750 МГц, круговая поляризация левого и правого вращения, разъём N-female.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-item reveal">
+            <i data-lucide="waveform"></i>
+            <h3>Широкий диапазон</h3>
+            <p>Перекрытие октавных и более широких диапазонов — от 300 до 2750 МГц в девяти моделях.</p>
+          </article>
+          <article class="feature-item reveal">
+            <i data-lucide="circle-dot"></i>
+            <h3>Круговая поляризация</h3>
+            <p>Левое и правое вращение (L/R) для пеленгования и работы в условиях многолучевости.</p>
+          </article>
+          <article class="feature-item reveal">
+            <i data-lucide="ruler"></i>
+            <h3>Контроль параметров</h3>
+            <p>Измерение КУ, КСВ и ДН на каждой единице. КСВ не более 1,5, КУ от 7 до 12 дБ.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div>
+            <span>Продукция</span>
+            <h2>Спиральные антенны по диапазонам частот</h2>
+          </div>
+          <p>Каталог разделён на три частотных диапазона — от низких частот до верхней границы L-диапазона. Каждая антенна доступна в исполнении L или R.</p>
+        </div>
+        <div class="category-grid">
+          <a class="category-card reveal" href="catalog.html?category=Низкие+частоты">
+            <img src="assets/images/category-comms.png" alt="Низкие частоты">
+            <div class="category-card__body"><h3>Низкие частоты</h3><p>300–850 МГц. Антенны для базовых диапазонов пеленгования и мониторинга.</p></div>
+          </a>
+          <a class="category-card reveal" href="catalog.html?category=Средние+частоты">
+            <img src="assets/images/category-optics.png" alt="Средние частоты">
+            <div class="category-card__body"><h3>Средние частоты</h3><p>850–1750 МГц. Антенны для разведки и подавления в L-диапазоне.</p></div>
+          </a>
+          <a class="category-card reveal" href="catalog.html?category=Высокие+частоты">
+            <img src="assets/images/category-storage.png" alt="Высокие частоты">
+            <div class="category-card__body"><h3>Высокие частоты</h3><p>1750–2750 МГц. Антенны для верхних частот с КУ до 12 дБ.</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div>
+            <span>Преимущества</span>
+            <h2>Технические решения для РЭБ</h2>
+          </div>
+          <a class="btn btn--primary" href="catalog.html"><i data-lucide="arrow-right"></i><span>Открыть каталог</span></a>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-item reveal">
+            <i data-lucide="scan-search"></i>
+            <h3>Полные спецификации</h3>
+            <p>КУ, КСВ, поляризация, материалы корпуса, тип разъёма и габаритные чертежи.</p>
+          </article>
+          <article class="feature-item reveal">
+            <i data-lucide="shopping-bag"></i>
+            <h3>Корзина и заказы</h3>
+            <p>Выбор исполнения L или R, количества, оформление заказа с отслеживанием статуса.</p>
+          </article>
+          <article class="feature-item reveal">
+            <i data-lucide="sliders-horizontal"></i>
+            <h3>Админ-панель</h3>
+            <p>Управление ассортиментом, заказами, пользователями и статистикой продаж.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>SATURN</h3>
+        <p>Производство спиральных антенн для систем радиоэлектронной борьбы. Диапазон 300–2750 МГц.</p>
+      </div>
+      <div>
+        <h4>Навигация</h4>
+        <a href="catalog.html">Каталог</a>
+        <a href="cart.html">Корзина</a>
+        <a href="profile.html">Личный кабинет</a>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <a href="tel:+78005550144">+7 800 555-01-44</a>
+        <a href="mailto:ops@saturn-store.ru">ops@saturn-store.ru</a>
+      </div>
+      <div>
+        <h4>Режим</h4>
+        <p>Пн-Пт: 09:00-19:00<br>Складская обработка: 24/7</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
