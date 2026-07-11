@@ -181,7 +181,6 @@
       return;
     }
 
-    const similar = await db().getSimilarProducts(product.id, product.category_id, 4);
     document.title = `${product.name} | SATURN`;
     page.innerHTML = `
       <section class="product-detail">
@@ -211,16 +210,6 @@
           <div class="spec-table">
             ${ui().specRows(product.specifications)}
           </div>
-        </div>
-      </section>
-
-      <section class="section section--tight">
-        <div class="section-heading">
-          <span>Похожие товары</span>
-          <h2>Совместимые позиции</h2>
-        </div>
-        <div class="product-grid product-grid--compact">
-          ${similar.map(ui().productCard).join('')}
         </div>
       </section>
     `;
