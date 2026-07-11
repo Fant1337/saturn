@@ -461,14 +461,15 @@
 
   async function upsertProfile(user, extra = {}) {
     if (!user) return null;
-    const client = requireClient();
+    const client = getClient();
+    if (!client) return null;
     const payload = {
       id: user.id,
       phone: normalizePhone(user.phone || extra.phone || user.user_metadata?.phone),
       full_name: extra.full_name || user.user_metadata?.full_name || null
     };
     const { error } = await client.from('users').upsert(payload, { onConflict: 'id' });
-    if (error) throw error;
+    if (error) console.warn('upsertProfile:', error.message);
     return getProfile();
   }
 
@@ -478,7 +479,6 @@
     const client = requireClient();
     const { data, error } = await client.from('users').select('*').eq('id', user.id).maybeSingle();
     if (error) throw error;
-    if (!data) return upsertProfile(user);
     return data;
   }
 
@@ -534,7 +534,6 @@
       password
     });
     if (error) throw error;
-    if (data.user) await upsertProfile(data.user, { email });
     window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
     return data;
   }
