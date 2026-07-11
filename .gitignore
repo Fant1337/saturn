@@ -32,3 +32,4 @@ build/
 
 # Supabase local config
 supabase/
+js/config.js
