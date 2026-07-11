@@ -52,6 +52,10 @@
             <input name="fullName" type="text" placeholder="Иванов Иван Иванович" autocomplete="name" required>
           </label>
           <label>
+            <span>Email</span>
+            <input name="email" type="email" placeholder="user@example.com" autocomplete="email" required>
+          </label>
+          <label>
             <span>Телефон</span>
             <input name="phone" type="tel" placeholder="+79990000000" autocomplete="tel" required>
           </label>
@@ -65,6 +69,19 @@
           </label>
           <button class="btn btn--primary btn--wide" type="submit"><i data-lucide="user-plus"></i><span>Зарегистрироваться</span></button>
           <a class="btn btn--ghost btn--wide" href="login.html"><i data-lucide="log-in"></i><span>Уже есть аккаунт</span></a>
+        </form>
+
+        <form class="auth-panel" data-otp-form hidden>
+          <div class="section-heading section-heading--compact">
+            <span>Подтверждение</span>
+            <h2>Код из письма</h2>
+          </div>
+          <p class="muted">На вашу почту отправлен код подтверждения. Введите его ниже.</p>
+          <label>
+            <span>Код подтверждения</span>
+            <input name="otp" type="text" inputmode="numeric" placeholder="123456" maxlength="6" required>
+          </label>
+          <button class="btn btn--primary btn--wide" type="submit"><i data-lucide="check-circle"></i><span>Подтвердить</span></button>
         </form>
       </div>
     </section>

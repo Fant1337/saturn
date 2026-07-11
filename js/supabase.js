@@ -499,14 +499,13 @@
     return data;
   }
 
-  async function register({ phone, password, fullName }) {
+  async function register({ email, phone, password, fullName }) {
     const client = requireClient();
     const normalizedPhone = normalizePhone(phone);
     const { data, error } = await client.auth.signUp({
-      phone: normalizedPhone,
+      email,
       password,
       options: {
-        channel: 'sms',
         data: {
           full_name: fullName,
           phone: normalizedPhone,
@@ -515,18 +514,30 @@
       }
     });
     if (error) throw error;
-    if (data.user) await upsertProfile(data.user, { full_name: fullName, phone: normalizedPhone });
+    if (data.user) await upsertProfile(data.user, { full_name: fullName, phone: normalizedPhone, email });
     return data;
   }
 
-  async function login({ phone, password }) {
+  async function verifyEmailOtp({ email, token }) {
+    const client = requireClient();
+    const { data, error } = await client.auth.verifyOtp({
+      email,
+      token,
+      type: 'email'
+    });
+    if (error) throw error;
+    window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
+    return data;
+  }
+
+  async function login({ email, password }) {
     const client = requireClient();
     const { data, error } = await client.auth.signInWithPassword({
-      phone: normalizePhone(phone),
+      email,
       password
     });
     if (error) throw error;
-    if (data.user) await upsertProfile(data.user, { phone });
+    if (data.user) await upsertProfile(data.user, { email });
     window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
     return data;
   }
@@ -1064,6 +1075,7 @@
     getProfile,
     updateProfile,
     register,
+    verifyEmailOtp,
     login,
     logout,
     isAdmin,

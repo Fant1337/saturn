@@ -38,21 +38,21 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
-      const phone = form.elements.phone.value;
+      const email = form.elements.email.value;
       const password = form.elements.password.value;
 
       if (!db().isReady()) {
         ui().toast('Сначала подключите Supabase в форме настройки ниже', 'error');
         return;
       }
-      if (!phone || !password || password.length < 6) {
-        ui().toast('Введите телефон и пароль минимум из 6 символов', 'error');
+      if (!email || !password || password.length < 6) {
+        ui().toast('Введите email и пароль минимум из 6 символов', 'error');
         return;
       }
 
       try {
         ui().setBusy(submit, true, 'Входим');
-        await db().login({ phone, password });
+        await db().login({ email, password });
         ui().toast('Авторизация выполнена');
         window.location.href = nextUrl();
       } catch (error) {
@@ -68,11 +68,13 @@
     if (!form) return;
     const configWarning = ui().qs('[data-config-warning]');
     if (configWarning) configWarning.hidden = db().isReady();
+    const otpForm = ui().qs('[data-otp-form]');
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
       const fullName = form.elements.fullName.value.trim();
+      const email = form.elements.email.value.trim();
       const phone = form.elements.phone.value.trim();
       const password = form.elements.password.value;
       const passwordRepeat = form.elements.passwordRepeat.value;
@@ -81,8 +83,8 @@
         ui().toast('Сначала подключите Supabase в форме настройки ниже', 'error');
         return;
       }
-      if (fullName.length < 3 || !phone) {
-        ui().toast('Введите ФИО и телефон', 'error');
+      if (fullName.length < 3 || !email || !phone) {
+        ui().toast('Введите ФИО, email и телефон', 'error');
         return;
       }
       if (password.length < 6 || password !== passwordRepeat) {
@@ -91,21 +93,43 @@
       }
 
       try {
-        ui().setBusy(submit, true, 'Создаем');
-        const data = await db().register({ phone, password, fullName });
-        if (data.session) {
-          ui().toast('Аккаунт создан');
-          window.location.href = nextUrl();
-        } else {
-          ui().toast('Аккаунт создан. Если включено SMS-подтверждение, завершите подтверждение в Supabase.');
-          window.location.href = 'login.html';
-        }
+        ui().setBusy(submit, true, 'Отправляем код');
+        await db().register({ email, phone, password, fullName });
+        form.hidden = true;
+        otpForm.hidden = false;
+        otpForm.dataset.email = email;
+        ui().toast('Код подтверждения отправлен на ' + email);
       } catch (error) {
         ui().toast(error.message || 'Не удалось зарегистрироваться', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
     });
+
+    if (otpForm) {
+      otpForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const submit = otpForm.querySelector('button[type="submit"]');
+        const token = otpForm.elements.otp.value.trim();
+        const email = otpForm.dataset.email;
+
+        if (!token || token.length < 4) {
+          ui().toast('Введите код из письма', 'error');
+          return;
+        }
+
+        try {
+          ui().setBusy(submit, true, 'Проверяем');
+          await db().verifyEmailOtp({ email, token });
+          ui().toast('Почта подтверждена! Входим...');
+          window.location.href = nextUrl();
+        } catch (error) {
+          ui().toast(error.message || 'Неверный код', 'error');
+        } finally {
+          ui().setBusy(submit, false);
+        }
+      });
+    }
   }
 
   async function renderProfile() {
