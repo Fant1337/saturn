@@ -36,11 +36,11 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
-      const email = form.elements.email.value;
-      const password = form.elements.password.value;
+      const email = form.querySelector('[name="email"]')?.value || '';
+      const password = form.querySelector('[name="password"]')?.value || '';
 
       if (!db().isReady()) {
-        ui().toast('Сначала подключите Supabase в форме настройки ниже', 'error');
+        ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
         return;
       }
       if (!email || !password || password.length < 6) {
@@ -69,10 +69,11 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
-      const fullName = form.elements.fullName.value.trim();
-      const email = form.elements.email.value.trim();
-      const password = form.elements.password.value;
-      const passwordRepeat = form.elements.passwordRepeat.value;
+      const get = (name) => form.querySelector(`[name="${name}"]`)?.value?.trim() || '';
+      const fullName = get('fullName');
+      const email = get('email');
+      const password = form.querySelector('[name="password"]')?.value || '';
+      const passwordRepeat = form.querySelector('[name="passwordRepeat"]')?.value || '';
 
       if (!db().isReady()) {
         ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
@@ -105,7 +106,7 @@
       otpForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const submit = otpForm.querySelector('button[type="submit"]');
-        const token = otpForm.elements.otp.value.trim();
+        const token = otpForm.querySelector('[name="otp"]')?.value?.trim() || '';
         const email = otpForm.dataset.email;
 
         if (!token || token.length < 4) {
