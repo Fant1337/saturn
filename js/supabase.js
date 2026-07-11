@@ -512,7 +512,6 @@
       }
     });
     if (error) throw error;
-    if (data.user) await upsertProfile(data.user, { full_name: fullName, email });
     return data;
   }
 
