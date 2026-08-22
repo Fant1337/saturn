@@ -7,6 +7,22 @@
   let adminProducts = [];
   let adminCategories = [];
 
+  function deliveryCell(order) {
+    const payload = order.cdek_payload || {};
+    if (order.delivery_provider !== 'cdek') {
+      return `<strong>Ручная</strong><small>${ui().escapeHtml(order.address || '-')}</small>`;
+    }
+    const point = payload.delivery_point || {};
+    const city = payload.city?.city || point.city || '';
+    const status = order.delivery_status === 'created' ? 'создано' : (order.delivery_status || 'ожидает');
+    const track = order.cdek_track_number || order.cdek_order_uuid || '';
+    return `
+      <strong>CDEK: ${ui().escapeHtml(status)}</strong>
+      <small>${ui().escapeHtml([city, point.name || point.code].filter(Boolean).join(', ') || order.address || '-')}</small>
+      ${track ? `<small>${ui().escapeHtml(track)}</small>` : ''}
+    `;
+  }
+
   async function guardAdmin() {
     const root = ui().qs('[data-admin-page]');
     if (!root) return false;
@@ -68,6 +84,7 @@
               <th>Клиент</th>
               <th>Телефон</th>
               <th>Сумма</th>
+              <th>Доставка</th>
               <th>Статус</th>
               <th>Дата</th>
             </tr>
@@ -82,6 +99,7 @@
                 <td>${ui().escapeHtml(order.full_name || order.users?.full_name || '-')}</td>
                 <td>${ui().escapeHtml(order.phone || order.users?.phone || '-')}</td>
                 <td>${db().asMoney(order.total_price)}</td>
+                <td>${deliveryCell(order)}</td>
                 <td>
                   <select data-order-status="${ui().escapeHtml(order.id)}">
                     ${ui().statusLabels.map((status) => `<option value="${status}" ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}

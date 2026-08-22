@@ -78,6 +78,7 @@ create table if not exists public.orders (
   cdek_track_number text,
   cdek_payload jsonb not null default '{}'::jsonb,
   status public.order_status not null default 'Обрабатывается',
+  delivery_price numeric(12, 2) not null default 0 check (delivery_price >= 0),
   total_price numeric(12, 2) not null check (total_price >= 0),
   created_at timestamptz not null default now()
 );
@@ -87,6 +88,17 @@ alter table public.orders add column if not exists delivery_status text;
 alter table public.orders add column if not exists cdek_order_uuid text;
 alter table public.orders add column if not exists cdek_track_number text;
 alter table public.orders add column if not exists cdek_payload jsonb not null default '{}'::jsonb;
+alter table public.orders add column if not exists delivery_price numeric(12, 2) not null default 0;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'orders_delivery_price_check'
+  ) then
+    alter table public.orders
+      add constraint orders_delivery_price_check check (delivery_price >= 0);
+  end if;
+end $$;
 
 create table if not exists public.order_items (
   id uuid primary key default gen_random_uuid(),
@@ -125,6 +137,10 @@ security definer
 set search_path = public
 as $$
 begin
+  if new.email_confirmed_at is null then
+    return new;
+  end if;
+
   insert into public.users (id, phone, full_name, role)
   values (
     new.id,
@@ -139,10 +155,38 @@ begin
 end;
 $$;
 
+create or replace function public.handle_confirmed_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if old.email_confirmed_at is null and new.email_confirmed_at is not null then
+    insert into public.users (id, phone, full_name, role)
+    values (
+      new.id,
+      coalesce(new.phone, new.raw_user_meta_data->>'phone', ''),
+      coalesce(new.raw_user_meta_data->>'full_name', ''),
+      'user'
+    )
+    on conflict (id) do update
+      set full_name = coalesce(nullif(excluded.full_name, ''), users.full_name),
+          phone = coalesce(nullif(excluded.phone, ''), users.phone);
+  end if;
+  return new;
+end;
+$$;
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_user();
+
+drop trigger if exists on_auth_user_confirmed on auth.users;
+create trigger on_auth_user_confirmed
+after update of email_confirmed_at on auth.users
+for each row execute function public.handle_confirmed_user();
 
 alter table public.users enable row level security;
 alter table public.categories enable row level security;

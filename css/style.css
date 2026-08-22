@@ -1142,6 +1142,65 @@ select:focus {
     rgba(13, 18, 16, 0.96);
 }
 
+.checkout-delivery {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(111, 214, 210, 0.22);
+  border-radius: var(--radius);
+  background: rgba(5, 10, 9, 0.48);
+}
+
+.cdek-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.cdek-options,
+.cdek-points {
+  display: grid;
+  gap: 10px;
+}
+
+.cdek-option,
+.cdek-point {
+  width: 100%;
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(10, 17, 15, 0.84);
+  color: var(--text);
+  text-align: left;
+}
+
+.cdek-option:hover,
+.cdek-point:hover,
+.cdek-point.is-selected {
+  border-color: rgba(111, 214, 210, 0.56);
+  background: rgba(23, 52, 49, 0.74);
+}
+
+.cdek-point {
+  grid-template-columns: minmax(0, 1fr) 150px;
+  align-items: start;
+}
+
+.cdek-option span,
+.cdek-point span,
+.cdek-point small {
+  color: var(--muted);
+}
+
+.cdek-point strong,
+.cdek-point small {
+  display: block;
+}
+
 label {
   display: grid;
   gap: 8px;
@@ -1351,6 +1410,15 @@ label {
   margin: 0;
   padding-left: 20px;
   color: var(--muted);
+}
+
+.order-delivery {
+  grid-column: 1 / -1;
+}
+
+.order-delivery strong {
+  display: block;
+  margin-top: 4px;
 }
 
 .status {
@@ -1807,6 +1875,11 @@ label {
 
   .cart-item {
     grid-template-columns: 130px minmax(0, 1fr) 142px;
+  }
+
+  .cdek-search,
+  .cdek-point {
+    grid-template-columns: 1fr;
   }
 
   .cart-item__price,

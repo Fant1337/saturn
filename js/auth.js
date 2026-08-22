@@ -9,6 +9,20 @@
     return params.get('next') || 'profile.html';
   }
 
+  function deliverySummary(order) {
+    const payload = order.cdek_payload || {};
+    if (order.delivery_provider !== 'cdek') return order.address || '-';
+    const point = payload.delivery_point || {};
+    const status = order.delivery_status === 'created' ? 'отправление создано' : (order.delivery_status || 'ожидает отправки');
+    const track = order.cdek_track_number || order.cdek_order_uuid || '';
+    return [
+      `CDEK: ${status}`,
+      payload.city?.city || point.city,
+      point.name || point.code,
+      track
+    ].filter(Boolean).join(' / ');
+  }
+
   async function renderSupabaseStatus() {
     const hosts = ui().qsa('[data-supabase-status]');
     if (!hosts.length) return;
@@ -260,6 +274,7 @@
                     <div><span class="muted">Дата</span><strong>${ui().formatDate(order.created_at)}</strong></div>
                     <div><span class="muted">Сумма</span><strong>${db().asMoney(order.total_price)}</strong></div>
                     <div>${ui().renderStatus(order.status)}</div>
+                    <div class="order-delivery"><span class="muted">Доставка</span><strong>${ui().escapeHtml(deliverySummary(order))}</strong></div>
                     <ul>${ui().orderItemsList(order)}</ul>
                   </article>
                 `).join('')}

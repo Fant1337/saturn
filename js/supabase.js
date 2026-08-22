@@ -656,8 +656,9 @@
         type: 'email'
       });
       if (error) throw error;
+      let verifiedUser = data.user;
       if (password) {
-        const { error: updateError } = await client.auth.updateUser({
+        const { data: updateData, error: updateError } = await client.auth.updateUser({
           password,
           data: {
             full_name: fullName,
@@ -666,8 +667,9 @@
           }
         });
         if (updateError) throw updateError;
+        verifiedUser = updateData.user || verifiedUser;
       }
-      if (data.user) await upsertProfile(data.user);
+      if (verifiedUser) await upsertProfile(verifiedUser, { full_name: fullName, phone });
       window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
       return data;
     } catch (error) {
@@ -961,7 +963,9 @@
     const cart = await getCart();
     if (!cart.length) throw new Error('Корзина пуста.');
 
-    const total = cart.reduce((sum, item) => sum + Number(item.product.price) * Number(item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => sum + Number(item.product.price) * Number(item.quantity), 0);
+    const deliveryPrice = Number(payload.delivery_price || payload.cdek_payload?.tariff?.delivery_sum || payload.cdek_payload?.tariff?.total_sum || 0);
+    const total = subtotal + Math.max(0, deliveryPrice);
 
     if (!client) {
       const orders = _localOrDemoOrders();
@@ -971,7 +975,11 @@
         full_name: payload.full_name,
         phone: normalizePhone(payload.phone),
         address: payload.address,
+        delivery_provider: payload.delivery_provider || 'manual',
+        delivery_status: payload.delivery_status || null,
+        cdek_payload: payload.cdek_payload || {},
         status: 'Обрабатывается',
+        delivery_price: Math.max(0, deliveryPrice),
         total_price: total,
         created_at: new Date().toISOString(),
         order_items: cart.map((item) => ({
@@ -997,7 +1005,11 @@
         full_name: payload.full_name,
         phone: normalizePhone(payload.phone),
         address: payload.address,
+        delivery_provider: payload.delivery_provider || 'manual',
+        delivery_status: payload.delivery_status || null,
+        cdek_payload: payload.cdek_payload || {},
         status: 'Обрабатывается',
+        delivery_price: Math.max(0, deliveryPrice),
         total_price: total
       })
       .select()
