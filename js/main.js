@@ -153,6 +153,9 @@
       }
     });
 
+    qsa('[data-admin-link]').forEach((link) => {
+      link.hidden = !admin;
+    });
   }
 
   function initNavigation() {
@@ -198,8 +201,12 @@
     }
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      window.SaturnDB.setConfig(form.elements.url.value, form.elements.anonKey.value);
-      toast('Конфигурация Supabase сохранена. Обновите страницу для новой сессии.');
+      try {
+        window.SaturnDB.setConfig(form.elements.url.value, form.elements.anonKey.value);
+        toast('Конфигурация Supabase сохранена. Обновите страницу для новой сессии.');
+      } catch (error) {
+        toast(error.message || 'Не удалось сохранить конфигурацию', 'error');
+      }
     });
   }
 

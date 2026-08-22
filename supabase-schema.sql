@@ -72,10 +72,21 @@ create table if not exists public.orders (
   full_name text not null,
   phone text not null,
   address text not null,
+  delivery_provider text not null default 'manual',
+  delivery_status text,
+  cdek_order_uuid text,
+  cdek_track_number text,
+  cdek_payload jsonb not null default '{}'::jsonb,
   status public.order_status not null default 'Обрабатывается',
   total_price numeric(12, 2) not null check (total_price >= 0),
   created_at timestamptz not null default now()
 );
+
+alter table public.orders add column if not exists delivery_provider text not null default 'manual';
+alter table public.orders add column if not exists delivery_status text;
+alter table public.orders add column if not exists cdek_order_uuid text;
+alter table public.orders add column if not exists cdek_track_number text;
+alter table public.orders add column if not exists cdek_payload jsonb not null default '{}'::jsonb;
 
 create table if not exists public.order_items (
   id uuid primary key default gen_random_uuid(),
@@ -122,7 +133,8 @@ begin
     'user'
   )
   on conflict (id) do update
-    set full_name = nullif(excluded.full_name, '');
+    set full_name = coalesce(nullif(excluded.full_name, ''), users.full_name),
+        phone = coalesce(nullif(excluded.phone, ''), users.phone);
   return new;
 end;
 $$;
@@ -283,7 +295,7 @@ values
     25,
     'ANT-001',
     '11111111-1111-4111-8111-111111111111',
-    '',
+    'assets/images/product-1.png',
     '2026-06-01 10:00:00+00'
   ),
   (
@@ -295,7 +307,7 @@ values
     25,
     'ANT-002',
     '11111111-1111-4111-8111-111111111111',
-    '',
+    'assets/images/product-2.png',
     '2026-06-02 10:00:00+00'
   ),
   (
@@ -307,7 +319,7 @@ values
     25,
     'ANT-003',
     '11111111-1111-4111-8111-111111111111',
-    '',
+    'assets/images/product-3.png',
     '2026-06-03 10:00:00+00'
   ),
   (
@@ -319,7 +331,7 @@ values
     25,
     'ANT-004',
     '22222222-2222-4222-8222-222222222222',
-    '',
+    'assets/images/product-4.png',
     '2026-06-04 10:00:00+00'
   ),
   (
@@ -331,7 +343,7 @@ values
     25,
     'ANT-005',
     '22222222-2222-4222-8222-222222222222',
-    '',
+    'assets/images/product-5.png',
     '2026-06-05 10:00:00+00'
   ),
   (
@@ -343,7 +355,7 @@ values
     25,
     'ANT-006',
     '22222222-2222-4222-8222-222222222222',
-    '',
+    'assets/images/product-6.png',
     '2026-06-06 10:00:00+00'
   ),
   (
@@ -355,7 +367,7 @@ values
     25,
     'ANT-007',
     '33333333-3333-4333-8333-333333333333',
-    '',
+    'assets/images/product-4.png',
     '2026-06-07 10:00:00+00'
   ),
   (
@@ -367,7 +379,7 @@ values
     25,
     'ANT-008',
     '33333333-3333-4333-8333-333333333333',
-    '',
+    'assets/images/product-5.png',
     '2026-06-08 10:00:00+00'
   ),
   (
@@ -379,7 +391,7 @@ values
     25,
     'ANT-009',
     '33333333-3333-4333-8333-333333333333',
-    '',
+    'assets/images/product-6.png',
     '2026-06-09 10:00:00+00'
   )
 on conflict (id) do update
@@ -392,18 +404,22 @@ set name = excluded.name,
     category_id = excluded.category_id,
     image_url = excluded.image_url;
 
+delete from public.product_images where coalesce(image_url, '') = '';
+
 insert into public.product_images (product_id, image_url, alt_text, sort_order)
 values
-  ('aaaaaaaa-0001-4000-9000-000000000001', '', 'Антенна спиральная 300-440 L\R ANT-001', 0),
-  ('aaaaaaaa-0002-4000-9000-000000000002', '', 'Антенна спиральная 440-650 L\R ANT-002', 0),
-  ('aaaaaaaa-0003-4000-9000-000000000003', '', 'Антенна спиральная 650-850 L\R ANT-003', 0),
-  ('aaaaaaaa-0004-4000-9000-000000000004', '', 'Антенна спиральная 850-1100 L\R ANT-004', 0),
-  ('aaaaaaaa-0005-4000-9000-000000000005', '', 'Антенна спиральная 1100-1450 L\R ANT-005', 0),
-  ('aaaaaaaa-0006-4000-9000-000000000006', '', 'Антенна спиральная 1450-1750 L\R ANT-006', 0),
-  ('aaaaaaaa-0007-4000-9000-000000000007', '', 'Антенна спиральная 1750-2150 L\R ANT-007', 0),
-  ('aaaaaaaa-0008-4000-9000-000000000008', '', 'Антенна спиральная 2150-2450 L\R ANT-008', 0),
-  ('aaaaaaaa-0009-4000-9000-000000000009', '', 'Антенна спиральная 2450-2750 L\R ANT-009', 0)
-on conflict do nothing;
+  ('aaaaaaaa-0001-4000-9000-000000000001', 'assets/images/product-1.png', 'Антенна спиральная 300-440 L\R ANT-001', 0),
+  ('aaaaaaaa-0002-4000-9000-000000000002', 'assets/images/product-2.png', 'Антенна спиральная 440-650 L\R ANT-002', 0),
+  ('aaaaaaaa-0003-4000-9000-000000000003', 'assets/images/product-3.png', 'Антенна спиральная 650-850 L\R ANT-003', 0),
+  ('aaaaaaaa-0004-4000-9000-000000000004', 'assets/images/product-4.png', 'Антенна спиральная 850-1100 L\R ANT-004', 0),
+  ('aaaaaaaa-0005-4000-9000-000000000005', 'assets/images/product-5.png', 'Антенна спиральная 1100-1450 L\R ANT-005', 0),
+  ('aaaaaaaa-0006-4000-9000-000000000006', 'assets/images/product-6.png', 'Антенна спиральная 1450-1750 L\R ANT-006', 0),
+  ('aaaaaaaa-0007-4000-9000-000000000007', 'assets/images/product-4.png', 'Антенна спиральная 1750-2150 L\R ANT-007', 0),
+  ('aaaaaaaa-0008-4000-9000-000000000008', 'assets/images/product-5.png', 'Антенна спиральная 2150-2450 L\R ANT-008', 0),
+  ('aaaaaaaa-0009-4000-9000-000000000009', 'assets/images/product-6.png', 'Антенна спиральная 2450-2750 L\R ANT-009', 0)
+on conflict (product_id, image_url) do update
+set alt_text = excluded.alt_text,
+    sort_order = excluded.sort_order;
 
 -- После регистрации первого администратора выполните:
 -- update public.users set role = 'admin' where phone = '+79990000000';

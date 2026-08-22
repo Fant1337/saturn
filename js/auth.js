@@ -9,6 +9,26 @@
     return params.get('next') || 'profile.html';
   }
 
+  async function renderSupabaseStatus() {
+    const hosts = ui().qsa('[data-supabase-status]');
+    if (!hosts.length) return;
+    hosts.forEach((host) => {
+      host.className = 'auth-status auth-status--pending';
+      host.innerHTML = '<i data-lucide="radio-tower"></i><span>Проверяем подключение Supabase...</span>';
+    });
+    ui().refreshIcons();
+
+    const status = await db().checkConnection();
+    hosts.forEach((host) => {
+      host.className = `auth-status ${status.ok ? 'auth-status--ok' : 'auth-status--error'}`;
+      host.innerHTML = `
+        <i data-lucide="${status.ok ? 'shield-check' : 'shield-alert'}"></i>
+        <span>${ui().escapeHtml(status.message)}</span>
+      `;
+    });
+    ui().refreshIcons();
+  }
+
   async function requireAuth() {
     if (!document.body.dataset.protected) return true;
     if (db().isDemo()) return true;
@@ -54,7 +74,7 @@
         ui().toast('Авторизация выполнена');
         window.location.href = nextUrl();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось войти', 'error');
+        ui().toast(db().humanizeSupabaseError(error) || 'Не удалось войти', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
@@ -71,6 +91,7 @@
       const submit = form.querySelector('button[type="submit"]');
       const get = (name) => form.querySelector(`[name="${name}"]`)?.value?.trim() || '';
       const fullName = get('fullName');
+      const phone = get('phone');
       const email = get('email');
       const password = form.querySelector('[name="password"]')?.value || '';
       const passwordRepeat = form.querySelector('[name="passwordRepeat"]')?.value || '';
@@ -79,8 +100,8 @@
         ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
         return;
       }
-      if (fullName.length < 3 || !email) {
-        ui().toast('Введите ФИО и email', 'error');
+      if (fullName.length < 3 || !email || phone.length < 8) {
+        ui().toast('Введите ФИО, телефон и email', 'error');
         return;
       }
       if (password.length < 6 || password !== passwordRepeat) {
@@ -89,14 +110,21 @@
       }
 
       try {
-        ui().setBusy(submit, true, 'Отправляем код');
-        await db().register({ email, password, fullName });
+        ui().setBusy(submit, true, 'Создаем аккаунт');
+        const data = await db().register({ email, password, fullName, phone });
+        if (data.session) {
+          ui().toast('Аккаунт создан, вход выполнен');
+          window.location.href = nextUrl();
+          return;
+        }
         form.hidden = true;
-        otpForm.hidden = false;
-        otpForm.dataset.email = email;
-        ui().toast('Код подтверждения отправлен на ' + email);
+        if (otpForm) {
+          otpForm.hidden = false;
+          otpForm.dataset.email = email;
+        }
+        ui().toast('Аккаунт создан. Подтвердите email для входа.');
       } catch (error) {
-        ui().toast(error.message || 'Не удалось зарегистрироваться', 'error');
+        ui().toast(db().humanizeSupabaseError(error) || 'Не удалось зарегистрироваться', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
@@ -120,7 +148,7 @@
           ui().toast('Почта подтверждена! Входим...');
           window.location.href = nextUrl();
         } catch (error) {
-          ui().toast(error.message || 'Неверный код', 'error');
+          ui().toast(db().humanizeSupabaseError(error) || 'Неверный код', 'error');
         } finally {
           ui().setBusy(submit, false);
         }
@@ -297,9 +325,16 @@
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
+    await renderSupabaseStatus();
     initLogin();
     initRegister();
     const allowed = await requireAuth();
-    if (allowed) await renderProfile();
+    if (allowed) {
+      try {
+        await renderProfile();
+      } catch (error) {
+        ui().toast(db().humanizeSupabaseError(error) || 'Ошибка личного кабинета', 'error');
+      }
+    }
   });
 })();

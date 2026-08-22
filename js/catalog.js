@@ -82,14 +82,45 @@
     window.SaturnUI.qsa('.reveal', grid).forEach((item) => item.classList.add('is-visible'));
   }
 
+  function renderCatalogLoading() {
+    const grid = ui().qs('[data-product-grid]');
+    const count = ui().qs('[data-catalog-count]');
+    if (count) count.textContent = 'Загрузка';
+    if (grid) {
+      grid.innerHTML = `
+        <section class="empty-state">
+          <i data-lucide="radio-tower"></i>
+          <h2>Загружаем каталог</h2>
+          <p>Проверяем наличие позиций и параметры частотных диапазонов.</p>
+        </section>
+      `;
+      ui().refreshIcons();
+    }
+  }
+
+  function applyInitialCategory() {
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get('category');
+    if (!categoryParam) return;
+    const normalized = categoryParam.trim().toLowerCase();
+    const match = state.categories.find((category) => (
+      category.id === categoryParam
+      || category.slug === categoryParam
+      || category.name.toLowerCase() === normalized
+    ));
+    if (match) state.category = match.id;
+  }
+
   async function initCatalogPage() {
     const page = ui().qs('[data-catalog-page]');
     if (!page) return;
 
+    renderCatalogLoading();
     const [products, categories] = await Promise.all([db().getProducts(), db().getCategories()]);
     state.products = products;
     state.categories = categories;
     state.filtered = products;
+    applyInitialCategory();
     renderCategoryFilters();
     renderProducts();
 

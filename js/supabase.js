@@ -9,9 +9,9 @@
   const USERS_STORAGE_KEY = 'saturn_users';
 
   const demoCategories = [
-    { id: '11111111-1111-4111-8111-111111111111', name: 'Низкие частоты', slug: 'low-frequency', image_url: 'assets/images/antenna-category.png' },
-    { id: '22222222-2222-4222-8222-222222222222', name: 'Средние частоты', slug: 'mid-frequency', image_url: 'assets/images/antenna-category.png' },
-    { id: '33333333-3333-4333-8333-333333333333', name: 'Высокие частоты', slug: 'high-frequency', image_url: 'assets/images/antenna-category.png' }
+    { id: '11111111-1111-4111-8111-111111111111', name: 'Низкие частоты', slug: 'low-frequency', image_url: 'assets/images/category-comms.png' },
+    { id: '22222222-2222-4222-8222-222222222222', name: 'Средние частоты', slug: 'mid-frequency', image_url: 'assets/images/category-optics.png' },
+    { id: '33333333-3333-4333-8333-333333333333', name: 'Высокие частоты', slug: 'high-frequency', image_url: 'assets/images/category-storage.png' }
   ];
 
   const demoOrders = [
@@ -102,10 +102,6 @@
     { id: 'demo-user-5', full_name: 'Попов Александр Игоревич', phone: '+7 999 555-66-77', role: 'user', created_at: '2026-06-05T16:00:00Z' }
   ];
 
-  function antennaImageUrl(label) {
-    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f5f5f5' rx='6'/%3E%3Crect x='100' y='20' width='200' height='10' rx='2' fill='%23888'/%3E%3Cpath d='M200 32 Q250 50 250 80 Q250 110 200 128 Q150 146 150 176 Q150 206 200 224 Q250 242 250 270' fill='none' stroke='%232c5282' stroke-width='4'/%3E%3Crect x='186' y='270' width='28' height='12' rx='2' fill='%23888'/%3E%3Ctext x='200' y='170' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23999'%3E${label}%3C/text%3E%3C/svg%3E`;
-  }
-
   const demoProducts = [
     {
       id: 'aaaaaaaa-0001-4000-9000-000000000001',
@@ -128,8 +124,8 @@
       category_id: demoCategories[0].id,
       category_name: 'Низкие частоты',
       category_slug: 'low-frequency',
-      image_url: antennaImageUrl('300-440 МГц · 7 дБ'),
-      images: [antennaImageUrl('300-440 МГц · 7 дБ')],
+      image_url: 'assets/images/product-1.png',
+      images: ['assets/images/product-1.png'],
       created_at: '2026-06-01T10:00:00Z'
     },
     {
@@ -153,8 +149,8 @@
       category_id: demoCategories[0].id,
       category_name: 'Низкие частоты',
       category_slug: 'low-frequency',
-      image_url: antennaImageUrl('440-650 МГц · 8 дБ'),
-      images: [antennaImageUrl('440-650 МГц · 8 дБ')],
+      image_url: 'assets/images/product-2.png',
+      images: ['assets/images/product-2.png'],
       created_at: '2026-06-02T10:00:00Z'
     },
     {
@@ -178,8 +174,8 @@
       category_id: demoCategories[0].id,
       category_name: 'Низкие частоты',
       category_slug: 'low-frequency',
-      image_url: antennaImageUrl('650-850 МГц · 10 дБ'),
-      images: [antennaImageUrl('650-850 МГц · 10 дБ')],
+      image_url: 'assets/images/product-3.png',
+      images: ['assets/images/product-3.png'],
       created_at: '2026-06-03T10:00:00Z'
     },
     {
@@ -203,8 +199,8 @@
       category_id: demoCategories[1].id,
       category_name: 'Средние частоты',
       category_slug: 'mid-frequency',
-      image_url: antennaImageUrl('850-1100 МГц · 11 дБ'),
-      images: [antennaImageUrl('850-1100 МГц · 11 дБ')],
+      image_url: 'assets/images/product-4.png',
+      images: ['assets/images/product-4.png'],
       created_at: '2026-06-04T10:00:00Z'
     },
     {
@@ -228,8 +224,8 @@
       category_id: demoCategories[1].id,
       category_name: 'Средние частоты',
       category_slug: 'mid-frequency',
-      image_url: antennaImageUrl('1100-1450 МГц · 12 дБ'),
-      images: [antennaImageUrl('1100-1450 МГц · 12 дБ')],
+      image_url: 'assets/images/product-5.png',
+      images: ['assets/images/product-5.png'],
       created_at: '2026-06-05T10:00:00Z'
     },
     {
@@ -253,8 +249,8 @@
       category_id: demoCategories[1].id,
       category_name: 'Средние частоты',
       category_slug: 'mid-frequency',
-      image_url: antennaImageUrl('1450-1750 МГц · 12 дБ'),
-      images: [antennaImageUrl('1450-1750 МГц · 12 дБ')],
+      image_url: 'assets/images/product-6.png',
+      images: ['assets/images/product-6.png'],
       created_at: '2026-06-06T10:00:00Z'
     },
     {
@@ -278,8 +274,8 @@
       category_id: demoCategories[2].id,
       category_name: 'Высокие частоты',
       category_slug: 'high-frequency',
-      image_url: antennaImageUrl('1750-2150 МГц · 12 дБ'),
-      images: [antennaImageUrl('1750-2150 МГц · 12 дБ')],
+      image_url: 'assets/images/product-4.png',
+      images: ['assets/images/product-4.png'],
       created_at: '2026-06-07T10:00:00Z'
     },
     {
@@ -303,8 +299,8 @@
       category_id: demoCategories[2].id,
       category_name: 'Высокие частоты',
       category_slug: 'high-frequency',
-      image_url: antennaImageUrl('2150-2450 МГц · 12 дБ'),
-      images: [antennaImageUrl('2150-2450 МГц · 12 дБ')],
+      image_url: 'assets/images/product-5.png',
+      images: ['assets/images/product-5.png'],
       created_at: '2026-06-08T10:00:00Z'
     },
     {
@@ -328,8 +324,8 @@
       category_id: demoCategories[2].id,
       category_name: 'Высокие частоты',
       category_slug: 'high-frequency',
-      image_url: antennaImageUrl('2450-2750 МГц · 12 дБ'),
-      images: [antennaImageUrl('2450-2750 МГц · 12 дБ')],
+      image_url: 'assets/images/product-6.png',
+      images: ['assets/images/product-6.png'],
       created_at: '2026-06-09T10:00:00Z'
     }
   ];
@@ -350,27 +346,95 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  function getConfig() {
-    if (window.SATURN_SUPABASE_CONFIG && window.SATURN_SUPABASE_CONFIG.url && window.SATURN_SUPABASE_CONFIG.anonKey) {
-      return window.SATURN_SUPABASE_CONFIG;
+  function normalizeConfig(config) {
+    const url = String(config?.url || '').trim();
+    const anonKey = String(config?.anonKey || '').trim();
+    if (!url || !anonKey || /YOUR-|PASTE-|PROJECT-URL/i.test(`${url} ${anonKey}`)) return null;
+    try {
+      const parsed = new URL(url);
+      if (!/^https?:$/.test(parsed.protocol)) return null;
+      return { url: parsed.origin, anonKey };
+    } catch (error) {
+      return null;
     }
-    return readJson(CONFIG_STORAGE_KEY, null);
+  }
+
+  function getConfig() {
+    return normalizeConfig(window.SATURN_SUPABASE_CONFIG) || normalizeConfig(readJson(CONFIG_STORAGE_KEY, null));
   }
 
   function setConfig(url, anonKey) {
-    writeJson(CONFIG_STORAGE_KEY, { url: url.trim(), anonKey: anonKey.trim() });
+    const normalized = normalizeConfig({ url, anonKey });
+    if (!normalized) throw new Error('Введите корректный Supabase Project URL и anon key.');
+    writeJson(CONFIG_STORAGE_KEY, normalized);
     cachedClient = null;
+    return normalized;
+  }
+
+  function humanizeSupabaseError(error) {
+    const message = error?.message || String(error || '');
+    if (/failed to fetch|fetch failed|load failed|networkerror/i.test(message)) {
+      return 'Нет связи с Supabase. Проверьте Project URL, anon key, DNS и что проект не удален или не остановлен.';
+    }
+    if (/invalid api key|jwt|apikey|api key/i.test(message)) {
+      return 'Supabase отклонил anon key. Возьмите актуальный anon public key в Project Settings -> API.';
+    }
+    if (/relation .* does not exist|could not find the table|schema cache/i.test(message)) {
+      return 'В Supabase не применена схема. Выполните supabase-schema.sql в SQL Editor проекта.';
+    }
+    if (/email not confirmed/i.test(message)) {
+      return 'Email не подтвержден. Откройте письмо Supabase или введите код подтверждения.';
+    }
+    if (/invalid login credentials/i.test(message)) {
+      return 'Неверный email или пароль.';
+    }
+    return message || 'Ошибка Supabase.';
+  }
+
+  function supabaseError(error) {
+    const wrapped = new Error(humanizeSupabaseError(error));
+    wrapped.originalError = error;
+    return wrapped;
+  }
+
+  function warnRemoteFallback(scope, error) {
+    console.warn(`[SaturnDB] ${scope}: ${humanizeSupabaseError(error)}`);
+  }
+
+  function timedFetch(input, init = {}) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 4500);
+    if (init.signal) {
+      if (init.signal.aborted) controller.abort();
+      else init.signal.addEventListener('abort', () => controller.abort(), { once: true });
+    }
+    const options = {
+      ...init,
+      signal: controller.signal
+    };
+
+    return fetch(input, options)
+      .catch((error) => {
+        if (error?.name === 'AbortError') {
+          throw new Error('Превышено время ожидания ответа Supabase.');
+        }
+        throw error;
+      })
+      .finally(() => window.clearTimeout(timeout));
   }
 
   function getClient() {
     const config = getConfig();
-    if (!config || !config.url || !config.anonKey || !window.supabase) return null;
+    if (!config || !window.supabase) return null;
     if (!cachedClient) {
       cachedClient = window.supabase.createClient(config.url, config.anonKey, {
         auth: {
           persistSession: true,
           autoRefreshToken: true,
           detectSessionInUrl: true
+        },
+        global: {
+          fetch: timedFetch
         }
       });
     }
@@ -380,7 +444,7 @@
   function requireClient() {
     const client = getClient();
     if (!client) {
-      throw new Error('Supabase не настроен. Добавьте URL проекта и anon key в window.SATURN_SUPABASE_CONFIG или localStorage.');
+      throw new Error('Supabase не настроен. Добавьте Project URL и anon public key в js/config.js.');
     }
     return client;
   }
@@ -414,12 +478,14 @@
           .slice()
           .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
           .map((item) => item.image_url)
+          .filter(Boolean)
       : product.images || [];
+    const fallbackImage = product.image_url || images[0] || 'assets/images/product-1.png';
 
     return {
       ...product,
-      image_url: product.image_url || images[0] || 'assets/images/product-1.png',
-      images: images.length ? images : [product.image_url || 'assets/images/product-1.png'],
+      image_url: fallbackImage,
+      images: images.length ? images : [fallbackImage],
       specifications: parseSpecs(product.specifications),
       category_name: product.category_name || product.categories?.name || '',
       category_slug: product.category_slug || product.categories?.slug || ''
@@ -447,16 +513,49 @@
   async function currentUser() {
     const client = getClient();
     if (!client) return null;
-    const { data, error } = await client.auth.getUser();
-    if (error) return null;
-    return data.user || null;
+    try {
+      const { data, error } = await client.auth.getUser();
+      if (error) return null;
+      return data.user || null;
+    } catch (error) {
+      return null;
+    }
   }
 
   async function currentSession() {
     const client = getClient();
     if (!client) return null;
-    const { data } = await client.auth.getSession();
-    return data.session || null;
+    try {
+      const { data } = await client.auth.getSession();
+      return data.session || null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async function checkConnection() {
+    const config = getConfig();
+    if (!config) {
+      return { ok: false, state: 'missing', message: 'Supabase не настроен: нет Project URL или anon public key.' };
+    }
+    if (!window.supabase) {
+      return { ok: false, state: 'library', message: 'Библиотека Supabase JS не загрузилась с CDN.' };
+    }
+    try {
+      const client = requireClient();
+      const { error } = await client.from('categories').select('id', { head: true, count: 'exact' });
+      if (error) throw error;
+      return { ok: true, state: 'ready', message: 'Supabase подключен.' };
+    } catch (error) {
+      return { ok: false, state: 'error', message: humanizeSupabaseError(error), error };
+    }
+  }
+
+  async function fetchProfile(userId) {
+    const client = requireClient();
+    const { data, error } = await client.from('users').select('*').eq('id', userId).maybeSingle();
+    if (error) throw supabaseError(error);
+    return data;
   }
 
   async function upsertProfile(user, extra = {}) {
@@ -468,18 +567,21 @@
       phone: normalizePhone(user.phone || extra.phone || user.user_metadata?.phone),
       full_name: extra.full_name || user.user_metadata?.full_name || null
     };
-    const { error } = await client.from('users').upsert(payload, { onConflict: 'id' });
-    if (error) console.warn('upsertProfile:', error.message);
-    return getProfile();
+    try {
+      const { error } = await client.from('users').upsert(payload, { onConflict: 'id' });
+      if (error) throw error;
+      return fetchProfile(user.id);
+    } catch (error) {
+      console.warn('upsertProfile:', humanizeSupabaseError(error));
+      return fetchProfile(user.id).catch(() => null);
+    }
   }
 
   async function getProfile() {
     const user = await currentUser();
     if (!user) return null;
-    const client = requireClient();
-    const { data, error } = await client.from('users').select('*').eq('id', user.id).maybeSingle();
-    if (error) throw error;
-    return data;
+    const profile = await fetchProfile(user.id);
+    return profile || upsertProfile(user);
   }
 
   async function updateProfile(payload) {
@@ -495,52 +597,70 @@
       .eq('id', user.id)
       .select()
       .single();
-    if (error) throw error;
+    if (error) throw supabaseError(error);
     return data;
   }
 
-  async function register({ email, password, fullName }) {
+  async function register({ email, password, fullName, phone }) {
     const client = requireClient();
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          role: 'user'
+    try {
+      const redirectTo = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, 'profile.html')}`;
+      const { data, error } = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectTo,
+          data: {
+            full_name: fullName,
+            phone: normalizePhone(phone),
+            role: 'user'
+          }
         }
-      }
-    });
-    if (error) throw error;
-    return data;
+      });
+      if (error) throw error;
+      if (data.session && data.user) await upsertProfile(data.user, { full_name: fullName, phone });
+      return data;
+    } catch (error) {
+      throw supabaseError(error);
+    }
   }
 
   async function verifyEmailOtp({ email, token }) {
     const client = requireClient();
-    const { data, error } = await client.auth.verifyOtp({
-      email,
-      token,
-      type: 'email'
-    });
-    if (error) throw error;
-    window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
-    return data;
+    try {
+      const { data, error } = await client.auth.verifyOtp({
+        email,
+        token,
+        type: 'signup'
+      });
+      if (error) throw error;
+      if (data.user) await upsertProfile(data.user);
+      window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
+      return data;
+    } catch (error) {
+      throw supabaseError(error);
+    }
   }
 
   async function login({ email, password }) {
     const client = requireClient();
-    const { data, error } = await client.auth.signInWithPassword({
-      email,
-      password
-    });
-    if (error) throw error;
-    window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
-    return data;
+    try {
+      const { data, error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+      if (error) throw error;
+      if (data.user) await upsertProfile(data.user);
+      window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
+      return data;
+    } catch (error) {
+      throw supabaseError(error);
+    }
   }
 
   async function logout() {
     const client = getClient();
-    if (client) await client.auth.signOut();
+    if (client) await client.auth.signOut().catch(() => null);
     window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
   }
 
@@ -552,9 +672,14 @@
   async function getCategories() {
     const client = getClient();
     if (!client) return demoCategories.slice();
-    const { data, error } = await client.from('categories').select('*').order('name', { ascending: true });
-    if (error) throw error;
-    return data && data.length ? data : demoCategories.slice();
+    try {
+      const { data, error } = await client.from('categories').select('*').order('name', { ascending: true });
+      if (error) throw error;
+      return data && data.length ? data : demoCategories.slice();
+    } catch (error) {
+      warnRemoteFallback('categories fallback', error);
+      return demoCategories.slice();
+    }
   }
 
   function isDemo() {
@@ -594,12 +719,17 @@
   async function getProducts() {
     const client = getClient();
     if (!client) return _localOrDemoProducts().map(normalizeProduct);
-    const { data, error } = await client
-      .from('products')
-      .select('*, categories(id,name,slug), product_images(id,image_url,alt_text,sort_order)')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return (data && data.length ? data : demoProducts).map(normalizeProduct);
+    try {
+      const { data, error } = await client
+        .from('products')
+        .select('*, categories(id,name,slug), product_images(id,image_url,alt_text,sort_order)')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data && data.length ? data : demoProducts).map(normalizeProduct);
+    } catch (error) {
+      warnRemoteFallback('products fallback', error);
+      return _localOrDemoProducts().map(normalizeProduct);
+    }
   }
 
   async function getProduct(id) {
@@ -608,14 +738,20 @@
       const products = _localOrDemoProducts();
       return normalizeProduct(products.find((product) => product.id === id) || products[0]);
     }
-    const { data, error } = await client
-      .from('products')
-      .select('*, categories(id,name,slug), product_images(id,image_url,alt_text,sort_order)')
-      .eq('id', id)
-      .maybeSingle();
-    if (error) throw error;
-    if (!data) return null;
-    return normalizeProduct(data);
+    try {
+      const { data, error } = await client
+        .from('products')
+        .select('*, categories(id,name,slug), product_images(id,image_url,alt_text,sort_order)')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) return null;
+      return normalizeProduct(data);
+    } catch (error) {
+      warnRemoteFallback('product fallback', error);
+      const products = _localOrDemoProducts();
+      return normalizeProduct(products.find((product) => product.id === id) || products[0]);
+    }
   }
 
   async function getSimilarProducts(productId, categoryId, limit = 4) {
@@ -1061,6 +1197,8 @@
     getConfig,
     setConfig,
     getClient,
+    checkConnection,
+    humanizeSupabaseError,
     isReady: () => Boolean(getClient()),
     isDemo,
     normalizePhone,
