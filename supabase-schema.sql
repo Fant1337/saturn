@@ -188,6 +188,11 @@ create trigger on_auth_user_confirmed
 after update of email_confirmed_at on auth.users
 for each row execute function public.handle_confirmed_user();
 
+delete from public.users users
+using auth.users auth_users
+where users.id = auth_users.id
+  and auth_users.email_confirmed_at is null;
+
 alter table public.users enable row level security;
 alter table public.categories enable row level security;
 alter table public.products enable row level security;
