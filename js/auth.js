@@ -85,6 +85,7 @@
     const form = ui().qs('[data-register-form]');
     if (!form) return;
     const otpForm = ui().qs('[data-otp-form]');
+    let pendingRegistration = null;
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -112,6 +113,7 @@
       try {
         ui().setBusy(submit, true, 'Создаем аккаунт');
         const data = await db().register({ email, password, fullName, phone });
+        pendingRegistration = { email, password, fullName, phone };
         if (data.session) {
           ui().toast('Аккаунт создан, вход выполнен');
           window.location.href = nextUrl();
@@ -121,8 +123,9 @@
         if (otpForm) {
           otpForm.hidden = false;
           otpForm.dataset.email = email;
+          otpForm.querySelector('[name="otp"]')?.focus();
         }
-        ui().toast('Аккаунт создан. Подтвердите email для входа.');
+        ui().toast('Код отправлен на email. Введите его для завершения регистрации.');
       } catch (error) {
         ui().toast(db().humanizeSupabaseError(error) || 'Не удалось зарегистрироваться', 'error');
       } finally {
@@ -144,13 +147,43 @@
 
         try {
           ui().setBusy(submit, true, 'Проверяем');
-          await db().verifyEmailOtp({ email, token });
+          await db().verifyEmailOtp({
+            email,
+            token,
+            password: pendingRegistration?.password,
+            fullName: pendingRegistration?.fullName,
+            phone: pendingRegistration?.phone
+          });
+          pendingRegistration = null;
           ui().toast('Почта подтверждена! Входим...');
           window.location.href = nextUrl();
         } catch (error) {
           ui().toast(db().humanizeSupabaseError(error) || 'Неверный код', 'error');
         } finally {
           ui().setBusy(submit, false);
+        }
+      });
+
+      otpForm.querySelector('[data-resend-otp]')?.addEventListener('click', async () => {
+        const resend = otpForm.querySelector('[data-resend-otp]');
+        const email = pendingRegistration?.email || otpForm.dataset.email;
+        if (!email) {
+          ui().toast('Сначала заполните форму регистрации', 'error');
+          return;
+        }
+
+        try {
+          ui().setBusy(resend, true, 'Отправляем');
+          await db().resendEmailOtp({
+            email,
+            fullName: pendingRegistration?.fullName,
+            phone: pendingRegistration?.phone
+          });
+          ui().toast('Код отправлен повторно. Проверьте почту и папку спам.');
+        } catch (error) {
+          ui().toast(db().humanizeSupabaseError(error) || 'Не удалось отправить код повторно', 'error');
+        } finally {
+          ui().setBusy(resend, false);
         }
       });
     }

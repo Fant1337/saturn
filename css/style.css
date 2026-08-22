@@ -252,6 +252,12 @@ button:disabled,
   color: #11120d;
 }
 
+.btn--secondary {
+  border-color: rgba(111, 214, 210, 0.56);
+  background: linear-gradient(180deg, rgba(32, 105, 105, 0.84), rgba(10, 34, 35, 0.92));
+  color: var(--text);
+}
+
 .btn--ghost {
   background: rgba(7, 11, 10, 0.72);
 }

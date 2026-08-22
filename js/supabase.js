@@ -605,10 +605,10 @@
     const client = requireClient();
     try {
       const redirectTo = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, 'profile.html')}`;
-      const { data, error } = await client.auth.signUp({
+      const { data, error } = await client.auth.signInWithOtp({
         email,
-        password,
         options: {
+          shouldCreateUser: true,
           emailRedirectTo: redirectTo,
           data: {
             full_name: fullName,
@@ -618,22 +618,55 @@
         }
       });
       if (error) throw error;
-      if (data.session && data.user) await upsertProfile(data.user, { full_name: fullName, phone });
+      return { ...data, otpSent: true };
+    } catch (error) {
+      throw supabaseError(error);
+    }
+  }
+
+  async function resendEmailOtp({ email, fullName, phone }) {
+    const client = requireClient();
+    try {
+      const redirectTo = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, 'profile.html')}`;
+      const { data, error } = await client.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: redirectTo,
+          data: {
+            full_name: fullName,
+            phone: normalizePhone(phone),
+            role: 'user'
+          }
+        }
+      });
+      if (error) throw error;
       return data;
     } catch (error) {
       throw supabaseError(error);
     }
   }
 
-  async function verifyEmailOtp({ email, token }) {
+  async function verifyEmailOtp({ email, token, password, fullName, phone }) {
     const client = requireClient();
     try {
       const { data, error } = await client.auth.verifyOtp({
         email,
         token,
-        type: 'signup'
+        type: 'email'
       });
       if (error) throw error;
+      if (password) {
+        const { error: updateError } = await client.auth.updateUser({
+          password,
+          data: {
+            full_name: fullName,
+            phone: normalizePhone(phone),
+            role: 'user'
+          }
+        });
+        if (updateError) throw updateError;
+      }
       if (data.user) await upsertProfile(data.user);
       window.dispatchEvent(new CustomEvent('saturn:auth-changed'));
       return data;
@@ -1209,6 +1242,7 @@
     getProfile,
     updateProfile,
     register,
+    resendEmailOtp,
     verifyEmailOtp,
     login,
     logout,
