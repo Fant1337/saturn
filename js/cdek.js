@@ -27,13 +27,20 @@
         body: JSON.stringify({ action, ...payload })
       });
     } catch (_) {
-      throw new Error('CDEK API недоступен на этом хостинге.');
+      throw new Error('Служба доставки временно недоступна.');
     }
 
     const contentType = response.headers.get('content-type') || '';
     const data = contentType.includes('application/json') ? await response.json() : null;
     if (!response.ok || data?.ok === false) {
-      throw new Error(data?.message || 'CDEK API вернул ошибку.');
+      const code = data?.code || '';
+      if (code === 'CITY_QUERY_TOO_SHORT') {
+        throw new Error(data?.message || 'Введите минимум 2 символа для поиска города.');
+      }
+      if (code === 'CITY_CODE_REQUIRED') {
+        throw new Error(data?.message || 'Выберите город доставки.');
+      }
+      throw new Error('Служба доставки временно недоступна. Попробуйте позже.');
     }
     return data;
   }

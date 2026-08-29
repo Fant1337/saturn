@@ -365,7 +365,7 @@
 
   function setConfig(url, anonKey) {
     const normalized = normalizeConfig({ url, anonKey });
-    if (!normalized) throw new Error('Введите корректный Supabase Project URL и anon key.');
+    if (!normalized) throw new Error('Не удалось сохранить параметры.');
     writeJson(CONFIG_STORAGE_KEY, normalized);
     cachedClient = null;
     return normalized;
@@ -374,21 +374,30 @@
   function humanizeSupabaseError(error) {
     const message = error?.message || String(error || '');
     if (/failed to fetch|fetch failed|load failed|networkerror/i.test(message)) {
-      return 'Нет связи с Supabase. Проверьте Project URL, anon key, DNS и что проект не удален или не остановлен.';
+      return 'Нет связи с сервисом аккаунтов. Попробуйте позже.';
     }
     if (/invalid api key|jwt|apikey|api key/i.test(message)) {
-      return 'Supabase отклонил anon key. Возьмите актуальный anon public key в Project Settings -> API.';
+      return 'Сервис аккаунтов временно отклонил запрос. Попробуйте позже.';
     }
     if (/relation .* does not exist|could not find the table|schema cache/i.test(message)) {
-      return 'В Supabase не применена схема. Выполните supabase-schema.sql в SQL Editor проекта.';
+      return 'Личный кабинет временно недоступен. Попробуйте позже.';
     }
     if (/email not confirmed/i.test(message)) {
-      return 'Email не подтвержден. Откройте письмо Supabase или введите код подтверждения.';
+      return 'Email не подтвержден. Откройте письмо или введите код подтверждения.';
     }
     if (/invalid login credentials/i.test(message)) {
       return 'Неверный email или пароль.';
     }
-    return message || 'Ошибка Supabase.';
+    if (/user already registered|already registered|already exists/i.test(message)) {
+      return 'Аккаунт с таким email уже существует.';
+    }
+    if (/rate limit|too many requests|over.*limit/i.test(message)) {
+      return 'Слишком много попыток. Попробуйте позже.';
+    }
+    if (/otp|token|code/i.test(message)) {
+      return 'Код не подошел. Проверьте письмо и попробуйте еще раз.';
+    }
+    return 'Не удалось выполнить действие. Попробуйте позже.';
   }
 
   function supabaseError(error) {
@@ -416,7 +425,7 @@
     return fetch(input, options)
       .catch((error) => {
         if (error?.name === 'AbortError') {
-          throw new Error('Превышено время ожидания ответа Supabase.');
+          throw new Error('Превышено время ожидания ответа. Попробуйте позже.');
         }
         throw error;
       })
@@ -444,7 +453,7 @@
   function requireClient() {
     const client = getClient();
     if (!client) {
-      throw new Error('Supabase не настроен. Добавьте Project URL и anon public key в js/config.js.');
+      throw new Error('Сервис временно недоступен.');
     }
     return client;
   }
@@ -536,16 +545,16 @@
   async function checkConnection() {
     const config = getConfig();
     if (!config) {
-      return { ok: false, state: 'missing', message: 'Supabase не настроен: нет Project URL или anon public key.' };
+      return { ok: false, state: 'missing', message: 'Личный кабинет временно недоступен.' };
     }
     if (!window.supabase) {
-      return { ok: false, state: 'library', message: 'Библиотека Supabase JS не загрузилась с CDN.' };
+      return { ok: false, state: 'library', message: 'Личный кабинет временно недоступен.' };
     }
     try {
       const client = requireClient();
       const { error } = await client.from('categories').select('id', { head: true, count: 'exact' });
       if (error) throw error;
-      return { ok: true, state: 'ready', message: 'Supabase подключен.' };
+      return { ok: true, state: 'ready', message: 'Личный кабинет готов к работе.' };
     } catch (error) {
       return { ok: false, state: 'error', message: humanizeSupabaseError(error), error };
     }

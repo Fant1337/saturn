@@ -270,7 +270,7 @@
       await initCatalogPage();
       await initProductPage();
     } catch (error) {
-      ui().toast(error.message || 'Ошибка загрузки каталога', 'error');
+      ui().toast('Не удалось загрузить каталог. Попробуйте позже.', 'error');
     }
   });
 })();

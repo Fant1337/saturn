@@ -203,9 +203,9 @@
       event.preventDefault();
       try {
         window.SaturnDB.setConfig(form.elements.url.value, form.elements.anonKey.value);
-        toast('Конфигурация Supabase сохранена. Обновите страницу для новой сессии.');
+        toast('Параметры сохранены. Обновите страницу.');
       } catch (error) {
-        toast(error.message || 'Не удалось сохранить конфигурацию', 'error');
+        toast('Не удалось сохранить параметры.', 'error');
       }
     });
   }
@@ -224,7 +224,7 @@
         toast('Товар добавлен в корзину');
         await updateCartBadge();
       } catch (error) {
-        toast(error.message || 'Не удалось добавить товар', 'error');
+        toast('Не удалось добавить товар. Попробуйте позже.', 'error');
       } finally {
         setBusy(button, false);
       }
@@ -241,7 +241,7 @@
         button.classList.toggle('is-active', active);
         toast(active ? 'Товар добавлен в избранное' : 'Товар удален из избранного');
       } catch (error) {
-        toast(error.message || 'Не удалось изменить избранное', 'error');
+        toast('Не удалось изменить избранное. Попробуйте позже.', 'error');
       }
     });
   }

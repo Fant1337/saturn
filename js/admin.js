@@ -26,9 +26,7 @@
   async function guardAdmin() {
     const root = ui().qs('[data-admin-page]');
     if (!root) return false;
-    const badge = document.getElementById('demo-badge');
     if (!db().isReady()) {
-      if (badge) badge.style.display = 'inline-flex';
       return true;
     }
     const admin = await db().isAdmin().catch(() => false);
@@ -37,7 +35,7 @@
         <section class="empty-state">
           <i data-lucide="lock-keyhole"></i>
           <h2>Доступ закрыт</h2>
-          <p>Панель доступна только пользователям с ролью Admin.</p>
+          <p>У вас нет доступа к этому разделу.</p>
           <a class="btn btn--primary" href="profile.html"><i data-lucide="user-round"></i><span>В кабинет</span></a>
         </section>
       `;
@@ -126,16 +124,14 @@
             <tr>
               <th>Пользователь</th>
               <th>Телефон</th>
-              <th>Роль</th>
               <th>Дата</th>
             </tr>
           </thead>
           <tbody>
             ${users.map((user) => `
               <tr>
-                <td><strong>${ui().escapeHtml(user.full_name || 'Без имени')}</strong><small>${ui().escapeHtml(user.id)}</small></td>
+                <td><strong>${ui().escapeHtml(user.full_name || 'Без имени')}</strong></td>
                 <td>${ui().escapeHtml(user.phone || '-')}</td>
-                <td><span class="role-badge">${user.role === 'admin' ? 'Admin' : 'User'}</span></td>
                 <td>${ui().formatDate(user.created_at)}</td>
               </tr>
             `).join('')}
@@ -191,7 +187,7 @@
     try {
       specifications = JSON.parse(form.elements.specifications.value || '{}');
     } catch (error) {
-      throw new Error('Характеристики должны быть корректным JSON.');
+      throw new Error('Проверьте формат характеристик.');
     }
     return {
       name: form.elements.name.value.trim(),
@@ -261,7 +257,7 @@
         await loadProducts();
         await renderStats();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось сохранить товар', 'error');
+        ui().toast('Не удалось сохранить товар. Попробуйте позже.', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
@@ -279,7 +275,7 @@
         ui().toast('Статус заказа обновлен');
         await renderStats();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось обновить статус', 'error');
+        ui().toast('Не удалось обновить статус. Попробуйте позже.', 'error');
       }
     });
 
@@ -301,7 +297,7 @@
           await loadProducts();
           await renderStats();
         } catch (error) {
-          ui().toast(error.message || 'Не удалось удалить товар', 'error');
+          ui().toast('Не удалось удалить товар. Попробуйте позже.', 'error');
         }
       }
     });
@@ -322,7 +318,7 @@
     try {
       await initAdminPage();
     } catch (error) {
-      ui().toast(error.message || 'Ошибка административной панели', 'error');
+      ui().toast('Раздел временно недоступен. Попробуйте позже.', 'error');
     }
   });
 })();

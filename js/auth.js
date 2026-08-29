@@ -26,20 +26,7 @@
   async function renderSupabaseStatus() {
     const hosts = ui().qsa('[data-supabase-status]');
     if (!hosts.length) return;
-    hosts.forEach((host) => {
-      host.className = 'auth-status auth-status--pending';
-      host.innerHTML = '<i data-lucide="radio-tower"></i><span>Проверяем подключение Supabase...</span>';
-    });
-    ui().refreshIcons();
-
-    const status = await db().checkConnection();
-    hosts.forEach((host) => {
-      host.className = `auth-status ${status.ok ? 'auth-status--ok' : 'auth-status--error'}`;
-      host.innerHTML = `
-        <i data-lucide="${status.ok ? 'shield-check' : 'shield-alert'}"></i>
-        <span>${ui().escapeHtml(status.message)}</span>
-      `;
-    });
+    hosts.forEach((host) => { host.remove(); });
     ui().refreshIcons();
   }
 
@@ -55,7 +42,7 @@
     if (document.body.dataset.admin === 'true') {
       const admin = await db().isAdmin().catch(() => false);
       if (!admin) {
-        ui().toast('Доступ только для администратора', 'error');
+        ui().toast('У вас нет доступа к этому разделу', 'error');
         window.location.href = 'profile.html';
         return false;
       }
@@ -74,7 +61,7 @@
       const password = form.querySelector('[name="password"]')?.value || '';
 
       if (!db().isReady()) {
-        ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
+        ui().toast('Вход временно недоступен. Попробуйте позже.', 'error');
         return;
       }
       if (!email || !password || password.length < 6) {
@@ -112,7 +99,7 @@
       const passwordRepeat = form.querySelector('[name="passwordRepeat"]')?.value || '';
 
       if (!db().isReady()) {
-        ui().toast('Supabase не подключен. Проверьте конфигурацию.', 'error');
+        ui().toast('Регистрация временно недоступна. Попробуйте позже.', 'error');
         return;
       }
       if (fullName.length < 3 || !email || phone.length < 8) {
@@ -211,9 +198,9 @@
       page.innerHTML = `
         <section class="empty-state">
           <i data-lucide="shield-alert"></i>
-          <h2>Supabase не настроен</h2>
-          <p>Личный кабинет использует авторизацию, профиль, заказы и избранное из Supabase. Добавьте URL и anon key на странице входа.</p>
-          <a class="btn btn--primary" href="login.html"><i data-lucide="key-round"></i><span>К настройке</span></a>
+          <h2>Личный кабинет временно недоступен</h2>
+          <p>Мы уже работаем над восстановлением доступа. Каталог и корзина остаются доступны.</p>
+          <a class="btn btn--primary" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Вернуться в каталог</span></a>
         </section>
       `;
       ui().refreshIcons();
@@ -234,7 +221,6 @@
             <span class="operator-card__mark">SATURN ID</span>
             <h2>${ui().escapeHtml(profile?.full_name || 'Оператор')}</h2>
             <p>${ui().escapeHtml(profile?.phone || 'Телефон не указан')}</p>
-            <span class="role-badge">${profile?.role === 'admin' ? 'Admin' : 'User'}</span>
           </div>
           <nav class="tabs tabs--vertical" aria-label="Разделы кабинета">
             <button class="tab is-active" type="button" data-profile-tab="profile"><i data-lucide="user-round"></i>Профиль</button>
@@ -252,7 +238,6 @@
             </div>
             <div class="info-grid">
               <div class="metric"><span>Телефон</span><strong>${ui().escapeHtml(profile?.phone || '-')}</strong></div>
-              <div class="metric"><span>Роль</span><strong>${profile?.role === 'admin' ? 'Admin' : 'User'}</strong></div>
               <div class="metric"><span>Заказов</span><strong>${orders.length}</strong></div>
               <div class="metric"><span>Избранное</span><strong>${favorites.length}</strong></div>
             </div>
@@ -365,7 +350,7 @@
         ui().toast('Профиль обновлен');
         await renderProfile();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось сохранить профиль', 'error');
+        ui().toast('Не удалось сохранить профиль. Попробуйте позже.', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
@@ -381,7 +366,7 @@
       try {
         await renderProfile();
       } catch (error) {
-        ui().toast(db().humanizeSupabaseError(error) || 'Ошибка личного кабинета', 'error');
+        ui().toast(db().humanizeSupabaseError(error) || 'Раздел временно недоступен. Попробуйте позже.', 'error');
       }
     }
   });

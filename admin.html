@@ -24,7 +24,6 @@
         <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
         <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
         <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
-        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
         <a class="nav-link" href="admin.html" data-admin-link hidden><i data-lucide="shield"></i><span>Админ</span></a>
         <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
       </nav>
@@ -36,11 +35,10 @@
     <section class="page-hero">
       <div class="container page-hero__inner">
         <div>
-          <span class="eyebrow">ADMIN</span>
+          <span class="eyebrow">Управление</span>
           <h1>Административная панель</h1>
-          <p>Заказы, пользователи, товары, статусы, изображения, статистика магазина и учет оборудования. Работает в демо-режиме без Supabase.</p>
+          <p>Заказы, клиенты, товары, статусы, изображения, статистика магазина и учет оборудования.</p>
         </div>
-        <span class="eyebrow" id="demo-badge" style="border-color:var(--amber);color:var(--amber);display:none">ДЕМО-РЕЖИМ</span>
       </div>
     </section>
 
@@ -98,7 +96,7 @@
                     <textarea name="description" rows="4" required></textarea>
                   </label>
                   <label>
-                    <span>Характеристики JSON</span>
+                    <span>Характеристики</span>
                     <textarea name="specifications" rows="7" required></textarea>
                   </label>
                   <label>
@@ -132,7 +130,7 @@
                 <span>Статистика</span>
                 <h2>Ключевые показатели</h2>
               </div>
-              <p class="muted">Показатели рассчитываются по таблицам products, users и orders.</p>
+              <p class="muted">Показатели обновляются по данным каталога, клиентов и заказов.</p>
             </section>
           </div>
         </div>

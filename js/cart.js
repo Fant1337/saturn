@@ -66,7 +66,7 @@
     if (!host) return;
     if (!status) {
       host.className = 'auth-status auth-status--pending';
-      host.innerHTML = '<i data-lucide="radio-tower"></i><span>Проверяем CDEK API...</span>';
+      host.innerHTML = '<i data-lucide="radio-tower"></i><span>Проверяем доступные пункты выдачи...</span>';
       ui().refreshIcons();
       return;
     }
@@ -75,7 +75,7 @@
     host.className = `auth-status ${ready ? 'auth-status--ok' : 'auth-status--error'}`;
     host.innerHTML = `
       <i data-lucide="${ready ? 'truck' : 'triangle-alert'}"></i>
-      <span>${ready ? 'CDEK API подключен.' : 'CDEK API ждет настройки переменных окружения на Vercel.'}</span>
+      <span>${ready ? 'Выберите город, чтобы увидеть пункты выдачи.' : 'Автоматический выбор пункта выдачи временно недоступен.'}</span>
     `;
     ui().refreshIcons();
   }
@@ -142,7 +142,7 @@
       });
       updateCheckoutSummary(cart);
     } catch (error) {
-      ui().toast(error.message || 'Не удалось рассчитать CDEK', 'error');
+      ui().toast('Не удалось рассчитать доставку. Попробуйте позже.', 'error');
     }
   }
 
@@ -220,7 +220,7 @@
           await renderCart();
         }
       } catch (error) {
-        ui().toast(error.message || 'Не удалось обновить корзину', 'error');
+        ui().toast('Не удалось обновить корзину. Попробуйте позже.', 'error');
       }
     });
 
@@ -232,7 +232,7 @@
         await db().updateCartItem(item.dataset.cartItem, Math.max(1, Number(input.value || 1)));
         await renderCart();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось обновить количество', 'error');
+        ui().toast('Не удалось обновить количество. Попробуйте позже.', 'error');
       }
     });
   }
@@ -353,7 +353,7 @@
         const host = ui().qs('[data-cdek-status]');
         if (host) {
           host.className = 'auth-status auth-status--error';
-          host.innerHTML = `<i data-lucide="triangle-alert"></i><span>${ui().escapeHtml(error.message || 'CDEK API недоступен.')}</span>`;
+          host.innerHTML = '<i data-lucide="triangle-alert"></i><span>Служба доставки временно недоступна.</span>';
           ui().refreshIcons();
         }
       });
@@ -373,7 +373,7 @@
         renderCityResults(cities);
       } catch (error) {
         const host = ui().qs('[data-cdek-city-results]');
-        if (host) host.innerHTML = `<p class="muted">${ui().escapeHtml(error.message || 'Не удалось найти город CDEK')}</p>`;
+        if (host) host.innerHTML = '<p class="muted">Не удалось найти город. Попробуйте позже.</p>';
       } finally {
         ui().setBusy(citySearch, false);
       }
@@ -407,7 +407,7 @@
           checkoutDelivery.points = points;
           renderPointResults(cart);
         } catch (error) {
-          renderPointResults(cart, error.message || 'Не удалось загрузить пункты CDEK.');
+          renderPointResults(cart, 'Не удалось загрузить пункты выдачи. Попробуйте позже.');
         }
         return;
       }
@@ -466,14 +466,14 @@
           <section class="empty-state empty-state--success">
             <i data-lucide="badge-check"></i>
             <h2>Заказ успешно оформлен</h2>
-            <p>${cdekResult ? 'Отправление CDEK создано автоматически. Данные уже доступны в административной панели.' : `Заказ сохранен, но CDEK не создал отправление автоматически: ${ui().escapeHtml(cdekError?.message || 'проверьте настройки API')}`}</p>
+            <p>${cdekResult ? 'Доставка оформлена автоматически. Мы начали обработку заказа.' : 'Заказ сохранен. Менеджер уточнит параметры доставки и свяжется с вами.'}</p>
             <a class="btn btn--primary" href="profile.html"><i data-lucide="user-round"></i><span>Открыть кабинет</span></a>
           </section>
         `;
         await ui().updateCartBadge();
         ui().refreshIcons();
       } catch (error) {
-        ui().toast(error.message || 'Не удалось оформить заказ', 'error');
+        ui().toast('Не удалось оформить заказ. Попробуйте позже.', 'error');
       } finally {
         ui().setBusy(submit, false);
       }
@@ -486,7 +486,7 @@
       initCartEvents();
       await renderCheckout();
     } catch (error) {
-      ui().toast(error.message || 'Ошибка корзины', 'error');
+      ui().toast('Раздел временно недоступен. Попробуйте позже.', 'error');
     }
   });
 

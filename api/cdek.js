@@ -89,7 +89,7 @@ async function getCdekToken() {
     throw error(
       503,
       'CDEK_NOT_CONFIGURED',
-      'CDEK API не настроен. Добавьте CDEK_CLIENT_ID и CDEK_CLIENT_SECRET в переменные окружения Vercel.'
+      'Служба доставки временно недоступна. Попробуйте позже.'
     );
   }
 
@@ -244,7 +244,7 @@ async function supabaseFetch(path, options = {}) {
     throw error(
       503,
       'SUPABASE_SERVER_NOT_CONFIGURED',
-      'Для создания отправления CDEK добавьте SUPABASE_URL и SUPABASE_SERVICE_ROLE_KEY в переменные окружения Vercel.'
+      'Оформление доставки временно недоступно. Попробуйте позже.'
     );
   }
 
@@ -265,7 +265,7 @@ async function supabaseFetch(path, options = {}) {
 async function getAuthUser(token) {
   if (!token) throw error(401, 'AUTH_REQUIRED', 'Для отправки заказа в CDEK нужно войти в аккаунт.');
   if (!supabaseConfigured()) {
-    throw error(503, 'SUPABASE_SERVER_NOT_CONFIGURED', 'На сервере не настроен Supabase service role key.');
+    throw error(503, 'SUPABASE_SERVER_NOT_CONFIGURED', 'Оформление доставки временно недоступно. Попробуйте позже.');
   }
 
   const url = `${process.env.SUPABASE_URL.replace(/\/+$/, '')}/auth/v1/user`;
@@ -474,7 +474,7 @@ module.exports = async function handler(req, res) {
     } else if (action === 'create-order') {
       result = await createCdekOrder(body, req);
     } else {
-      throw error(400, 'UNKNOWN_ACTION', 'Неизвестное действие CDEK API.');
+      throw error(400, 'UNKNOWN_ACTION', 'Неизвестное действие.');
     }
 
     return json(res, 200, { ok: true, ...result });
@@ -482,7 +482,7 @@ module.exports = async function handler(req, res) {
     return json(res, err.status || 500, {
       ok: false,
       code: err.code || 'SERVER_ERROR',
-      message: err.message || 'Ошибка CDEK API.',
+      message: err.message || 'Служба доставки временно недоступна.',
       details: err.details || null
     });
   }

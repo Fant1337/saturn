@@ -23,7 +23,6 @@
         <a class="nav-link" href="index.html"><i data-lucide="home"></i><span>Главная</span></a>
         <a class="nav-link" href="catalog.html"><i data-lucide="grid-3x3"></i><span>Каталог</span></a>
         <a class="nav-link nav-cart" href="cart.html"><i data-lucide="shopping-cart"></i><span>Корзина</span><b class="cart-badge" data-cart-count hidden>0</b></a>
-        <a class="nav-link" href="profile.html"><i data-lucide="user-round"></i><span>Кабинет</span></a>
         <a class="nav-link" href="login.html" data-auth-link><i data-lucide="log-in"></i><span data-auth-label>Войти</span></a>
       </nav>
       <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-label="Открыть меню"><i data-lucide="menu"></i></button>
@@ -33,9 +32,9 @@
   <main>
     <section class="auth-shell">
       <div class="auth-brief reveal">
-        <span class="eyebrow">AUTH</span>
+        <span class="eyebrow">Вход</span>
         <h1>Вход в защищенный контур</h1>
-        <p>Авторизация через Supabase Authentication по email и паролю. Сессия сохраняется клиентом Supabase.</p>
+        <p>Используйте email и пароль, чтобы открыть личный кабинет, историю заказов и сохраненные позиции.</p>
       </div>
       <div>
         <form class="auth-panel reveal" data-login-form>
@@ -43,7 +42,6 @@
             <span>Авторизация</span>
             <h2>Войти</h2>
           </div>
-          <div data-supabase-status></div>
           <label>
             <span>Email</span>
             <input name="email" type="email" placeholder="user@example.com" autocomplete="email" required>
