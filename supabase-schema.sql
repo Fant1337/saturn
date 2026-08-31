@@ -130,6 +130,71 @@ as $$
   );
 $$;
 
+create or replace function public.account_exists(contact_email text default null, contact_phone text default null)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+declare
+  normalized_email text := lower(btrim(coalesce(contact_email, '')));
+  normalized_phone text := regexp_replace(coalesce(contact_phone, ''), '[^0-9+]', '', 'g');
+  phone_digits text := regexp_replace(coalesce(contact_phone, ''), '[^0-9]', '', 'g');
+  email_exists boolean := false;
+  phone_exists boolean := false;
+begin
+  if normalized_email <> '' then
+    select exists (
+      select 1
+      from auth.users
+      where lower(email) = normalized_email
+        and email_confirmed_at is not null
+    )
+    into email_exists;
+  end if;
+
+  if normalized_phone <> '' or phone_digits <> '' then
+    with candidates(phone) as (
+      select normalized_phone where normalized_phone <> ''
+      union
+      select phone_digits where phone_digits <> ''
+      union
+      select '+7' || phone_digits where length(phone_digits) = 10
+      union
+      select '7' || phone_digits where length(phone_digits) = 10
+      union
+      select '8' || phone_digits where length(phone_digits) = 10
+      union
+      select '+7' || substring(phone_digits from 2) where length(phone_digits) = 11 and phone_digits like '8%'
+      union
+      select '7' || substring(phone_digits from 2) where length(phone_digits) = 11 and phone_digits like '8%'
+      union
+      select '+' || phone_digits where length(phone_digits) = 11 and phone_digits like '7%'
+      union
+      select '8' || substring(phone_digits from 2) where length(phone_digits) = 11 and phone_digits like '7%'
+    )
+    select exists (
+      select 1
+      from public.users
+      where public.users.phone in (select candidates.phone from candidates)
+    )
+    into phone_exists;
+  end if;
+
+  return jsonb_build_object(
+    'exists', email_exists or phone_exists,
+    'matches', jsonb_build_object(
+      'email', email_exists,
+      'phone', phone_exists
+    )
+  );
+end;
+$$;
+
+revoke all on function public.account_exists(text, text) from public;
+grant execute on function public.account_exists(text, text) to anon, authenticated;
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql

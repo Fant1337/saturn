@@ -611,21 +611,16 @@
   }
 
   async function checkExistingAccount({ email, phone }) {
+    const client = requireClient();
     try {
-      const response = await timedFetch('/api/auth-check', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, phone })
+      const { data, error } = await client.rpc('account_exists', {
+        contact_email: email || '',
+        contact_phone: phone || ''
       });
-      const data = await response.json().catch(() => null);
-      if (!response.ok || data?.ok === false) {
-        throw new Error(data?.message || 'Не удалось проверить аккаунт.');
-      }
+      if (error) throw error;
       return {
-        exists: Boolean(data.exists),
-        matches: data.matches || {}
+        exists: Boolean(data?.exists),
+        matches: data?.matches || {}
       };
     } catch (error) {
       throw supabaseError(error);
