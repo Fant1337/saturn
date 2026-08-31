@@ -372,6 +372,7 @@
   }
 
   function humanizeSupabaseError(error) {
+    if (error?.userMessage) return error.userMessage;
     const message = error?.message || String(error || '');
     if (/failed to fetch|fetch failed|load failed|networkerror/i.test(message)) {
       return 'Нет связи с сервисом аккаунтов. Попробуйте позже.';
@@ -391,7 +392,7 @@
     if (/user already registered|already registered|already exists/i.test(message)) {
       return 'Аккаунт с таким email уже существует.';
     }
-    if (/rate limit|too many requests|over.*limit/i.test(message)) {
+    if (/rate limit|too many requests|over.*limit|security purposes/i.test(message)) {
       return 'Слишком много попыток. Попробуйте позже.';
     }
     if (/otp|token|code/i.test(message)) {
@@ -401,7 +402,9 @@
   }
 
   function supabaseError(error) {
-    const wrapped = new Error(humanizeSupabaseError(error));
+    const userMessage = humanizeSupabaseError(error);
+    const wrapped = new Error(userMessage);
+    wrapped.userMessage = userMessage;
     wrapped.originalError = error;
     return wrapped;
   }
@@ -459,7 +462,19 @@
   }
 
   function normalizePhone(phone) {
-    return String(phone || '').replace(/[^\d+]/g, '');
+    const raw = String(phone || '').trim();
+    const digits = raw.replace(/\D/g, '');
+    if (!digits) return '';
+    if (digits.length === 11 && (digits.startsWith('8') || digits.startsWith('7'))) {
+      return `+7${digits.slice(1)}`;
+    }
+    if (digits.length === 10) {
+      return `+7${digits}`;
+    }
+    if (raw.startsWith('+')) {
+      return `+${digits}`;
+    }
+    return digits;
   }
 
   function asMoney(value) {

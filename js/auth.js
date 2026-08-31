@@ -9,6 +9,27 @@
     return params.get('next') || 'profile.html';
   }
 
+  function normalizeEmail(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(normalizeEmail(value));
+  }
+
+  function normalizeRussianPhone(value) {
+    return db().normalizePhone(value);
+  }
+
+  function isValidRussianPhone(value) {
+    return /^\+7\d{10}$/.test(normalizeRussianPhone(value));
+  }
+
+  function passwordMeetsRequirements(value) {
+    const digitCount = (String(value || '').match(/\d/g) || []).length;
+    return digitCount >= 8 && /[A-Za-zА-Яа-яЁё]/.test(value);
+  }
+
   function deliverySummary(order) {
     const payload = order.cdek_payload || {};
     if (order.delivery_provider !== 'cdek') return order.address || '-';
@@ -57,21 +78,29 @@
     const emailInput = form.querySelector('[name="email"]');
     const emailParam = new URLSearchParams(window.location.search).get('email');
     if (emailInput && emailParam && !emailInput.value) {
-      emailInput.value = emailParam;
+      emailInput.value = normalizeEmail(emailParam);
     }
+    emailInput?.addEventListener('blur', () => {
+      emailInput.value = normalizeEmail(emailInput.value);
+    });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
-      const email = form.querySelector('[name="email"]')?.value || '';
+      const email = normalizeEmail(form.querySelector('[name="email"]')?.value || '');
       const password = form.querySelector('[name="password"]')?.value || '';
+      if (emailInput) emailInput.value = email;
 
       if (!db().isReady()) {
         ui().toast('Вход временно недоступен. Попробуйте позже.', 'error');
         return;
       }
-      if (!email || !password || password.length < 6) {
-        ui().toast('Введите email и пароль минимум из 6 символов', 'error');
+      if (!isValidEmail(email)) {
+        ui().toast('Введите корректный email', 'error');
+        return;
+      }
+      if (!password) {
+        ui().toast('Введите пароль', 'error');
         return;
       }
 
@@ -92,7 +121,23 @@
     const form = ui().qs('[data-register-form]');
     if (!form) return;
     const otpForm = ui().qs('[data-otp-form]');
+    const phoneInput = form.querySelector('[name="phone"]');
+    const emailInput = form.querySelector('[name="email"]');
     let pendingRegistration = null;
+
+    function syncPhoneInput(force = false) {
+      if (!phoneInput) return;
+      const normalized = normalizeRussianPhone(phoneInput.value);
+      if (force || /^\+7\d{10}$/.test(normalized)) {
+        phoneInput.value = normalized;
+      }
+    }
+
+    phoneInput?.addEventListener('input', () => syncPhoneInput(false));
+    phoneInput?.addEventListener('blur', () => syncPhoneInput(true));
+    emailInput?.addEventListener('blur', () => {
+      emailInput.value = normalizeEmail(emailInput.value);
+    });
 
     function hideExistingNotice() {
       const notice = form.querySelector('[data-existing-account]');
@@ -128,21 +173,35 @@
       const submit = form.querySelector('button[type="submit"]');
       const get = (name) => form.querySelector(`[name="${name}"]`)?.value?.trim() || '';
       const fullName = get('fullName');
-      const phone = get('phone');
-      const email = get('email');
+      const phone = normalizeRussianPhone(get('phone'));
+      const email = normalizeEmail(get('email'));
       const password = form.querySelector('[name="password"]')?.value || '';
       const passwordRepeat = form.querySelector('[name="passwordRepeat"]')?.value || '';
+      if (phoneInput) phoneInput.value = phone;
+      if (emailInput) emailInput.value = email;
 
       if (!db().isReady()) {
         ui().toast('Регистрация временно недоступна. Попробуйте позже.', 'error');
         return;
       }
-      if (fullName.length < 3 || !email || phone.length < 8) {
-        ui().toast('Введите ФИО, телефон и email', 'error');
+      if (fullName.length < 3) {
+        ui().toast('Введите ФИО', 'error');
         return;
       }
-      if (password.length < 6 || password !== passwordRepeat) {
-        ui().toast('Пароли должны совпадать и содержать минимум 6 символов', 'error');
+      if (!isValidRussianPhone(phone)) {
+        ui().toast('Введите российский номер в формате +7XXXXXXXXXX', 'error');
+        return;
+      }
+      if (!isValidEmail(email)) {
+        ui().toast('Введите корректный email', 'error');
+        return;
+      }
+      if (password !== passwordRepeat) {
+        ui().toast('Пароли должны совпадать', 'error');
+        return;
+      }
+      if (!passwordMeetsRequirements(password)) {
+        ui().toast('Пароль должен содержать минимум 8 цифр и 1 букву', 'error');
         return;
       }
 
