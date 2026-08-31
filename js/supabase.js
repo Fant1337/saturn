@@ -610,6 +610,28 @@
     return data;
   }
 
+  async function checkExistingAccount({ email, phone }) {
+    try {
+      const response = await timedFetch('/api/auth-check', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, phone })
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || data?.ok === false) {
+        throw new Error(data?.message || 'Не удалось проверить аккаунт.');
+      }
+      return {
+        exists: Boolean(data.exists),
+        matches: data.matches || {}
+      };
+    } catch (error) {
+      throw supabaseError(error);
+    }
+  }
+
   async function register({ email, password, fullName, phone }) {
     const client = requireClient();
     try {
@@ -1263,6 +1285,7 @@
     getProfile,
     updateProfile,
     register,
+    checkExistingAccount,
     resendEmailOtp,
     verifyEmailOtp,
     login,

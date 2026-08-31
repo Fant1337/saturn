@@ -54,6 +54,12 @@
     const form = ui().qs('[data-login-form]');
     if (!form) return;
 
+    const emailInput = form.querySelector('[name="email"]');
+    const emailParam = new URLSearchParams(window.location.search).get('email');
+    if (emailInput && emailParam && !emailInput.value) {
+      emailInput.value = emailParam;
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const submit = form.querySelector('button[type="submit"]');
@@ -88,8 +94,37 @@
     const otpForm = ui().qs('[data-otp-form]');
     let pendingRegistration = null;
 
+    function hideExistingNotice() {
+      const notice = form.querySelector('[data-existing-account]');
+      if (!notice) return;
+      notice.hidden = true;
+      notice.innerHTML = '';
+    }
+
+    function showExistingNotice(result, email) {
+      const notice = form.querySelector('[data-existing-account]');
+      if (!notice) return;
+      const matches = result?.matches || {};
+      const contactLabel = matches.email && matches.phone
+        ? 'такими email и телефоном'
+        : matches.email
+          ? 'таким email'
+          : 'таким телефоном';
+      const loginUrl = matches.email && email
+        ? `login.html?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextUrl())}`
+        : `login.html?next=${encodeURIComponent(nextUrl())}`;
+
+      notice.innerHTML = `
+        <i data-lucide="log-in"></i>
+        <span>Аккаунт с ${contactLabel} уже есть. <a href="${loginUrl}">Выполните вход.</a></span>
+      `;
+      notice.hidden = false;
+      ui().refreshIcons();
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      hideExistingNotice();
       const submit = form.querySelector('button[type="submit"]');
       const get = (name) => form.querySelector(`[name="${name}"]`)?.value?.trim() || '';
       const fullName = get('fullName');
@@ -113,6 +148,13 @@
 
       try {
         ui().setBusy(submit, true, 'Создаем аккаунт');
+        const existingAccount = await db().checkExistingAccount({ email, phone });
+        if (existingAccount.exists) {
+          showExistingNotice(existingAccount, email);
+          ui().toast('Аккаунт уже существует. Выполните вход.', 'error');
+          return;
+        }
+
         const data = await db().register({ email, password, fullName, phone });
         pendingRegistration = { email, password, fullName, phone };
         if (data.session) {
